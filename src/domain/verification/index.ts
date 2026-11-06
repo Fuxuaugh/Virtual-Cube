@@ -17,6 +17,16 @@
  */
 
 export { buildCaseState, buildCaseStateRaw } from './case-state.js'
+export {
+  crossSolved,
+  enumerateF2lPairClasses,
+  f2lCaseState,
+  pairGroup,
+  pairSignature,
+  unsolvedSlots,
+  type F2lPairEnumeration,
+  type F2lPairGroup,
+} from './f2l-cases.js'
 export { f2lSolved } from './f2l-solved.js'
 export {
   enumerateOllClasses,

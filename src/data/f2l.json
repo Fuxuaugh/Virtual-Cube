@@ -1,0 +1,412 @@
+[
+  {
+    "id": "F2L-01",
+    "category": "F2L",
+    "name": "Basic Inserts 1",
+    "algorithm": "U R U' R'",
+    "inverseAlgorithm": "R U R' U'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Basic Inserts"]
+  },
+  {
+    "id": "F2L-02",
+    "category": "F2L",
+    "name": "Basic Inserts 2",
+    "algorithm": "y' U' R' U R",
+    "inverseAlgorithm": "R' U' R U y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Basic Inserts"]
+  },
+  {
+    "id": "F2L-03",
+    "category": "F2L",
+    "name": "Basic Inserts 3",
+    "algorithm": "y' R' U' R",
+    "inverseAlgorithm": "R' U R y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Basic Inserts"]
+  },
+  {
+    "id": "F2L-04",
+    "category": "F2L",
+    "name": "Basic Inserts 4",
+    "algorithm": "R U R'",
+    "inverseAlgorithm": "R U' R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Basic Inserts"]
+  },
+  {
+    "id": "F2L-05",
+    "category": "F2L",
+    "name": "Case 1.1",
+    "algorithm": "U' R U' R' U y' R' U' R",
+    "inverseAlgorithm": "R' U R y U' R U R' U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 1"]
+  },
+  {
+    "id": "F2L-06",
+    "category": "F2L",
+    "name": "Case 1.2",
+    "algorithm": "U' R U R' U R U R'",
+    "inverseAlgorithm": "R U' R' U' R U' R' U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 1"]
+  },
+  {
+    "id": "F2L-07",
+    "category": "F2L",
+    "name": "Case 1.3",
+    "algorithm": "U' R U2' R' U y' R' U' R",
+    "inverseAlgorithm": "R' U R y U' R U2 R' U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 1"]
+  },
+  {
+    "id": "F2L-08",
+    "category": "F2L",
+    "name": "Case 1.4",
+    "algorithm": "R' U2' R2 U R2' U R",
+    "inverseAlgorithm": "R' U' R2 U' R2' U2 R",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 1"]
+  },
+  {
+    "id": "F2L-09",
+    "category": "F2L",
+    "name": "Case 1.5",
+    "algorithm": "y' U R' U R U' R' U' R",
+    "inverseAlgorithm": "R' U R U R' U' R U' y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 1"]
+  },
+  {
+    "id": "F2L-10",
+    "category": "F2L",
+    "name": "Case 1.6",
+    "algorithm": "U' R U' R' U R U R'",
+    "inverseAlgorithm": "R U' R' U' R U R' U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 1"]
+  },
+  {
+    "id": "F2L-11",
+    "category": "F2L",
+    "name": "Case 2.1",
+    "algorithm": "U' R U R' U2 R U' R'",
+    "inverseAlgorithm": "R U R' U2' R U' R' U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 2"]
+  },
+  {
+    "id": "F2L-12",
+    "category": "F2L",
+    "name": "Case 2.2",
+    "algorithm": "y' U R' U' R U2' R' U R",
+    "inverseAlgorithm": "R' U' R U2 R' U R U' y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 2"]
+  },
+  {
+    "id": "F2L-13",
+    "category": "F2L",
+    "name": "Case 2.3",
+    "algorithm": "U' R U2' R' U2 R U' R'",
+    "inverseAlgorithm": "R U R' U2' R U2 R' U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 2"]
+  },
+  {
+    "id": "F2L-14",
+    "category": "F2L",
+    "name": "Case 2.4",
+    "algorithm": "y' U R' U2 R U2' R' U R",
+    "inverseAlgorithm": "R' U' R U2 R' U2' R U' y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 2"]
+  },
+  {
+    "id": "F2L-15",
+    "category": "F2L",
+    "name": "Case 3.1",
+    "algorithm": "U R U2 R' U R U' R'",
+    "inverseAlgorithm": "R U R' U' R U2' R' U'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 3"]
+  },
+  {
+    "id": "F2L-16",
+    "category": "F2L",
+    "name": "Case 3.2",
+    "algorithm": "y' U' R' U2 R U' R' U R",
+    "inverseAlgorithm": "R' U' R U R' U2' R U y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 3"]
+  },
+  {
+    "id": "F2L-17",
+    "category": "F2L",
+    "name": "Case 3.3",
+    "algorithm": "U2 R U R' U R U' R'",
+    "inverseAlgorithm": "R U R' U' R U' R' U2'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 3"]
+  },
+  {
+    "id": "F2L-18",
+    "category": "F2L",
+    "name": "Case 3.4",
+    "algorithm": "y' U2 R' U' R U' R' U R",
+    "inverseAlgorithm": "R' U' R U R' U R U2' y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Case 3"]
+  },
+  {
+    "id": "F2L-19",
+    "category": "F2L",
+    "name": "Incorrectly Connected 1",
+    "algorithm": "y' R' U R U2' y R U R'",
+    "inverseAlgorithm": "R U' R' y' U2 R' U' R y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Incorrectly Connected"]
+  },
+  {
+    "id": "F2L-20",
+    "category": "F2L",
+    "name": "Incorrectly Connected 2",
+    "algorithm": "R U' R' U2 y' R' U' R",
+    "inverseAlgorithm": "R' U R y U2' R U R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Incorrectly Connected"]
+  },
+  {
+    "id": "F2L-21",
+    "category": "F2L",
+    "name": "Incorrectly Connected 3",
+    "algorithm": "R U2 R' U' R U R'",
+    "inverseAlgorithm": "R U' R' U R U2' R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Incorrectly Connected"]
+  },
+  {
+    "id": "F2L-22",
+    "category": "F2L",
+    "name": "Incorrectly Connected 4",
+    "algorithm": "y' R' U2 R U R' U' R",
+    "inverseAlgorithm": "R' U R U' R' U2' R y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Incorrectly Connected"]
+  },
+  {
+    "id": "F2L-23",
+    "category": "F2L",
+    "name": "Incorrectly Connected 5",
+    "algorithm": "U R U' R' U' R U' R' U R U' R'",
+    "inverseAlgorithm": "R U R' U' R U R' U R U R' U'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Incorrectly Connected"]
+  },
+  {
+    "id": "F2L-24",
+    "category": "F2L",
+    "name": "Incorrectly Connected 6",
+    "algorithm": "y' U' R' U R U R' U R U' R' U R",
+    "inverseAlgorithm": "R' U' R U R' U' R U' R' U' R U y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Incorrectly Connected"]
+  },
+  {
+    "id": "F2L-25",
+    "category": "F2L",
+    "name": "Corner in Place 1",
+    "algorithm": "U' F' R U R' U' R' F R",
+    "inverseAlgorithm": "R' F' R U R U' R' F U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Corner in Place"]
+  },
+  {
+    "id": "F2L-26",
+    "category": "F2L",
+    "name": "Corner in Place 2",
+    "algorithm": "U R U' R' U' F' U F",
+    "inverseAlgorithm": "F' U' F U R U R' U'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Corner in Place"]
+  },
+  {
+    "id": "F2L-27",
+    "category": "F2L",
+    "name": "Corner in Place 3",
+    "algorithm": "R U' R' U R U' R'",
+    "inverseAlgorithm": "R U R' U' R U R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Corner in Place"]
+  },
+  {
+    "id": "F2L-28",
+    "category": "F2L",
+    "name": "Corner in Place 4",
+    "algorithm": "y' R' U R U' R' U R",
+    "inverseAlgorithm": "R' U' R U R' U' R y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Corner in Place"]
+  },
+  {
+    "id": "F2L-29",
+    "category": "F2L",
+    "name": "Corner in Place 5",
+    "algorithm": "y' R' U' R U R' U' R",
+    "inverseAlgorithm": "R' U R U' R' U R y",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Corner in Place"]
+  },
+  {
+    "id": "F2L-30",
+    "category": "F2L",
+    "name": "Corner in Place 6",
+    "algorithm": "R U R' U' R U R'",
+    "inverseAlgorithm": "R U' R' U R U' R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Corner in Place"]
+  },
+  {
+    "id": "F2L-31",
+    "category": "F2L",
+    "name": "Edge in Place 1",
+    "algorithm": "R U' R' U y' R' U R",
+    "inverseAlgorithm": "R' U' R y U' R U R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Edge in Place"]
+  },
+  {
+    "id": "F2L-32",
+    "category": "F2L",
+    "name": "Edge in Place 2",
+    "algorithm": "U R U' R' U R U' R' U R U' R'",
+    "inverseAlgorithm": "R U R' U' R U R' U' R U R' U'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Edge in Place"]
+  },
+  {
+    "id": "F2L-33",
+    "category": "F2L",
+    "name": "Edge in Place 3",
+    "algorithm": "U' R U' R' U2 R U' R'",
+    "inverseAlgorithm": "R U R' U2' R U R' U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Edge in Place"]
+  },
+  {
+    "id": "F2L-34",
+    "category": "F2L",
+    "name": "Edge in Place 4",
+    "algorithm": "U R U R' U2 R U R'",
+    "inverseAlgorithm": "R U' R' U2' R U' R' U'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Edge in Place"]
+  },
+  {
+    "id": "F2L-35",
+    "category": "F2L",
+    "name": "Edge in Place 5",
+    "algorithm": "U' R U R' U y' R' U' R",
+    "inverseAlgorithm": "R' U R y U' R U' R' U",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Edge in Place"]
+  },
+  {
+    "id": "F2L-36",
+    "category": "F2L",
+    "name": "Edge in Place 6",
+    "algorithm": "U F' U' F U' R U R'",
+    "inverseAlgorithm": "R U' R' U F' U F U'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Edge in Place"]
+  },
+  {
+    "id": "F2L-37",
+    "category": "F2L",
+    "name": "Both in Place 1",
+    "algorithm": "R U' R' d R' U2 R U2' R' U R",
+    "inverseAlgorithm": "R' U' R U2 R' U2' R d' R U R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Both in Place"]
+  },
+  {
+    "id": "F2L-38",
+    "category": "F2L",
+    "name": "Both in Place 2",
+    "algorithm": "R U' R' U' R U R' U2 R U' R'",
+    "inverseAlgorithm": "R U R' U2' R U' R' U R U R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Both in Place"]
+  },
+  {
+    "id": "F2L-39",
+    "category": "F2L",
+    "name": "Both in Place 3",
+    "algorithm": "R U' R' U R U2' R' U R U' R'",
+    "inverseAlgorithm": "R U R' U' R U2 R' U' R U R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Both in Place"]
+  },
+  {
+    "id": "F2L-40",
+    "category": "F2L",
+    "name": "Both in Place 4",
+    "algorithm": "F' U F U2 R U R' U R U' R'",
+    "inverseAlgorithm": "R U R' U' R U' R' U2' F' U' F",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Both in Place"]
+  },
+  {
+    "id": "F2L-41",
+    "category": "F2L",
+    "name": "Both in Place 5",
+    "algorithm": "R U R' U' R U' R' U2 y' R' U' R",
+    "inverseAlgorithm": "R' U R y U2' R U R' U R U' R'",
+    "alternatives": [],
+    "source": "CubeSkills F2L Algorithms PDF (Feliks Zemdegs & Andy Klise), file f2l.pdf",
+    "tags": ["Both in Place"]
+  }
+]

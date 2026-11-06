@@ -32,6 +32,7 @@ import prettier from 'prettier'
 
 import { isEmptyCsvRow, parseCsv } from '../src/data-build/csv.js'
 import { normalizeAlgorithm } from '../src/data-build/normalize-algorithm.js'
+import { f2lGroupFromName } from '../src/data-build/f2l-group.js'
 import type { CaseCategory, TrainingCase } from '../src/domain/training-case.js'
 import { validateCaseData } from '../src/domain/validate-case-data.js'
 import { invertAlg } from '../src/engine/index.js'
@@ -39,12 +40,19 @@ import { invertAlg } from '../src/engine/index.js'
 interface CategoryConfig {
   csvFile: string
   outputFile: string
+  /** Tag tambahan per baris (mis. nama grup F2L). */
+  tags?: (fields: { id: string; name: string }) => string[]
 }
 
 /** Kategori yang didukung skrip ini (satu CSV per kategori). */
 const CATEGORY_CONFIG: Readonly<Record<string, CategoryConfig>> = {
   PLL: { csvFile: 'pll.csv', outputFile: 'pll.json' },
   OLL: { csvFile: 'oll.csv', outputFile: 'oll.json' },
+  F2L: {
+    csvFile: 'f2l.csv',
+    outputFile: 'f2l.json',
+    tags: (fields) => [f2lGroupFromName(fields.name)],
+  },
 }
 
 const REQUIRED_COLUMNS = ['id', 'name', 'algorithm', 'source_url'] as const
@@ -92,6 +100,7 @@ async function buildCategory(category: CaseCategory): Promise<void> {
       row[columnIndex.get(name) ?? -1] ?? ''
 
     const id = field('id')
+    const name = field('name')
     const rawAlgorithm = field('algorithm')
 
     try {
@@ -99,12 +108,12 @@ async function buildCategory(category: CaseCategory): Promise<void> {
       const trainingCase: TrainingCase = {
         id,
         category,
-        name: field('name'),
+        name,
         algorithm,
         inverseAlgorithm: invertAlg(algorithm),
         alternatives: [],
         source: field('source_url'),
-        tags: [],
+        tags: config.tags?.({ id, name }) ?? [],
         ...(auf === null ? {} : { metadata: { auf } }),
       }
       cases.push(trainingCase)

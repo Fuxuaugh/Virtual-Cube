@@ -13,6 +13,13 @@ export {
   validateAlg,
 } from './cube-engine.js'
 export {
+  f2lGeometry,
+  findPieceSlot,
+  moveAffectedSlots,
+  type F2lGeometry,
+  type F2lSlotGeometry,
+} from './f2l-slots.js'
+export {
   normalizeOrientation,
   wholeCubeRotationAlgs,
 } from './normalize-orientation.js'

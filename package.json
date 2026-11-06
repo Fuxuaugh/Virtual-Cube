@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:data": "tsx scripts/build-case-data.ts PLL && tsx scripts/build-case-data.ts OLL",
+    "build:data": "tsx scripts/build-case-data.ts PLL && tsx scripts/build-case-data.ts OLL && tsx scripts/build-case-data.ts F2L",
     "build:data:pll": "tsx scripts/build-case-data.ts PLL",
     "build:data:oll": "tsx scripts/build-case-data.ts OLL",
+    "build:data:f2l": "tsx scripts/build-case-data.ts F2L",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

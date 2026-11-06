@@ -137,3 +137,80 @@ rotasi netto).
    atau (c) ubah cara AUF ditambahkan agar pose algoritma tidak rusak.
 3. Penambahan AUF acak (PRD §2) juga harus memperhitungkan pose: AUF adalah
    putaran layer U pada pose yang dipakai, bukan pada pose ternormalisasi.
+
+## F2L
+
+| Pemeriksaan                                                                                     | Hasil                              |
+| ----------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Normalisasi + `parseAlg` (41 algoritma)                                                         | 41/41 lulus, 0 gagal               |
+| `validateCaseData`                                                                              | valid                              |
+| `loadCases('F2L')`                                                                              | berhasil, 41 case                  |
+| Jumlah baris data CSV = jumlah case JSON                                                        | 41 = 41                            |
+| Kondisi awal (cross solved, tepat 1 slot belum selesai, F2L belum solved) - pose ternormalisasi | 41/41 lulus                        |
+| Algoritma menyelesaikan case - pose mentah (persis `solved`)                                    | 41/41 lulus                        |
+| Jumlah per grup PDF (4/6/4/4/6/6/6/5) dan konsistensi grup PDF <-> `pairGroup`                  | lulus                              |
+| `pairSignature` unik antar 41 case                                                              | **GAGAL: hanya 27 signature unik** |
+| 41 signature + solved menutup 42 kelas enumerasi                                                | **GAGAL: 28 dari 42 kelas**        |
+| Case dengan rotasi netto pada pose mentah                                                       | 18 (daftar di bawah)               |
+
+Dua pemeriksaan yang gagal ditandai `it.fails` lewat `RECORDED_FAILURES` di
+`src/data/f2l-data.test.ts`. Data dan algoritma **tidak** diubah.
+
+### Kegagalan 1 - `pairSignature` tidak unik (14 grup, 28 case)
+
+Signature yang sama muncul untuk case berikut (algoritma persis dari kolom `algorithm`
+CSV, tidak diubah):
+
+| Signature | Case              | Algoritma persis dari CSV                                           |
+| --------- | ----------------- | ------------------------------------------------------------------- |
+| `02\|30`  | `F2L-01`,`F2L-07` | `U (R U' R')` / `U' (R U2' R' U) y' (R' U' R)`                      |
+| `01\|00`  | `F2L-02`,`F2L-08` | `y' U' (R' U R)` / `R' U2' R2 U R2' U R`                            |
+| `02\|10`  | `F2L-03`,`F2L-13` | `y' (R' U' R)` / `U' (R U2' R') U2 (R U' R')`                       |
+| `01\|20`  | `F2L-04`,`F2L-14` | `(R U R')` / `y' U (R' U2 R) U2' (R' U R)`                          |
+| `02\|20`  | `F2L-05`,`F2L-11` | `U' (R U' R' U) y' (R' U' R)` / `(U' R U R') U2 (R U' R')`          |
+| `01\|10`  | `F2L-06`,`F2L-12` | `U' (R U R' U) (R U R')` / `y' (U R' U' R) U2' (R' U R)`            |
+| `02\|00`  | `F2L-09`,`F2L-19` | `y' U (R' U R U') (R' U' R)` / `y' (R' U R) U2' y (R U R')`         |
+| `01\|30`  | `F2L-10`,`F2L-20` | `U' (R U' R' U) (R U R')` / `(R U' R' U2) y' (R' U' R)`             |
+| `00\|20`  | `F2L-15`,`F2L-18` | `U (R U2 R') U (R U' R')` / `y' U2 (R' U' R) U' (R' U' R)`          |
+| `00\|10`  | `F2L-16`,`F2L-17` | `y' U' (R' U2 R) U' (R' U R)` / `U2 (R U R' U) (R U' R')`           |
+| `00\|30`  | `F2L-21`,`F2L-24` | `(R U2 R') U' (R U R')` / `y' U' (R' U R U) (R' U R U') (R' U R)`   |
+| `00\|00`  | `F2L-22`,`F2L-23` | `y' (R' U2 R) U (R' U' R)` / `U (R U' R' U') (R U' R' U) (R U' R')` |
+| `H1\|00`  | `F2L-27`,`F2L-29` | `(R U' R' U) (R U' R')` / `y' (R' U' R U) (R' U' R)`                |
+| `H2\|00`  | `F2L-28`,`F2L-30` | `y' (R' U R U') (R' U R)` / `(R U R' U') (R U R')`                  |
+
+Sebab (terukur):
+
+- 12 grup pertama: konfigurasi pasangan **identik** (corner di atas slotnya, twist sama,
+  edge pada posisi relatif sama, flip 0). State satu case adalah citra rotasi `y^3` dari
+  state yang lain **untuk kedua piece pasangan**; seluruh state tidak bisa dipetakan satu
+  ke yang lain oleh satu rotasi (diuji `y`,`y2`,`y'`,`x`,`x'`,`x2`,`z`,`z'`,`z2`: tidak ada
+  yang membuat keduanya identik), jadi yang berbeda adalah piece layer atas lainnya.
+  Karena `pairSignature` (sesuai tugas) hanya membaca pasangan dan dinormalisasi terhadap
+  AUF, keduanya menghasilkan signature sama. Algoritma case kedua umumnya memuat `y'`.
+- 2 grup terakhir (`H1|00`, `H2|00`): keluarga Corner in Place yang berbeda hanya oleh
+  **AUF** (posisi edge di layer U), dan menurut definisi "case yang beda AUF sama" maka
+  signature-nya sama.
+
+### Kegagalan 2 - cakupan kelas 28 dari 42
+
+Enumerasi menghasilkan 42 kelas (24 `both-in-u-layer` + 6 `corner-in-place` +
+6 `edge-in-place` + 6 `both-in-place`). Data menutup 27 signature + signature solved =
+**28 kelas**; 14 kelas tidak muncul di data:
+
+- 12 kelas `both-in-u-layer` dengan flip edge 1 (data hanya memuat flip 0 untuk keluarga ini);
+- 2 kelas `corner-in-place` dengan flip edge 1.
+
+### Rotasi netto pada pose mentah (18 case)
+
+`F2L-02`, `F2L-03`, `F2L-05`, `F2L-07`, `F2L-09`, `F2L-12`, `F2L-14`, `F2L-16`, `F2L-18`,
+`F2L-20`, `F2L-22`, `F2L-24`, `F2L-28`, `F2L-29`, `F2L-31`, `F2L-35`, `F2L-37`, `F2L-41`.
+
+Semuanya memuat `y`/`y'`/`d` netto (tidak berpasangan). Algoritma yang belum muncul di
+tabel duplikat di atas:
+
+| Case     | Algoritma persis dari CSV               |
+| -------- | --------------------------------------- |
+| `F2L-31` | `(R U' R' U) y' (R' U R)`               |
+| `F2L-35` | `(U' R U R') U y' (R' U' R)`            |
+| `F2L-37` | `(R U' R') d (R' U2 R) U2' (R' U R)`    |
+| `F2L-41` | `(R U R' U') (R U' R') U2 y' (R' U' R)` |
