@@ -2,7 +2,7 @@
 
 ## M0 — Spike 0.3: Engine cubing.js (terverifikasi di Console)
 
-**Versi cubing:** (isi dari package.json, bagian dependencies)
+**Versi cubing:** 0.66.1
 
 ### 1. Memuat kpuzzle dan membuat pola solved
 
@@ -45,10 +45,12 @@ pattern.experimentalIsSolved({
 Terverifikasi: setelah `y x` hasilnya `true`. Ini memenuhi keputusan PRD §2 (solved tidak peduli rotasi x/y/z).
 Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah antar versi. Bungkus di adapter, jangan dipanggil langsung dari UI.
 
-### 5. Bentuk patternData
-
-`pattern.patternData` berisi tiga kunci: `EDGES`, `CORNERS`, `CENTERS`.
-(TODO: buka objeknya di Console, catat isi tiap kunci, misalnya apakah ada `pieces` dan `orientation`, lalu tulis di sini. Jangan ditulis dari asumsi.)
+### 5. Bentuk patternData (cubing 0.66.1, terverifikasi dari tipe dan runtime)
+- Tiga orbit: EDGES (12 piece, orientasi mod 2), CORNERS (8 piece, mod 3), CENTERS (6 piece, orientasi tidak dilacak).
+- `pieces[slot]` = home slot dari piece yang kini ada di slot itu. `orientation[slot]` = orientasi piece tersebut.
+- Layer atas diturunkan dari efek gerakan U pada solved: slot corner dan edge 0 sampai 3. Gerakan U tidak mengubah orientasi.
+- Rotasi seluruh cube dan slice (M, E, S) menggeser center. Semua gerakan engine punya permutasi center berupa salah satu dari 24 rotasi cube.
+- `M` menggeser center persis seperti `x'`.
 
 ### Implikasi untuk adapter
 
@@ -100,3 +102,18 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
 
 - `experimentalIsSolved`, `experimentalAddMove`, dan `experimentalModel` berawalan "experimental" dan bisa berubah antar versi. Bungkus di adapter, jangan dipanggil dari UI.
 - `kpuzzle()` async, jadi adapter harus punya langkah init yang di-await sekali.
+
+## M3 — Temuan alat verifikasi
+- OLL: 216 kombinasi orientasi legal layer atas, 58 kelas setelah normalisasi putaran U (57 OLL + 1 kelas solved).
+  Hitungan Burnside: (216 + 2 + 12 + 2) / 4 = 58.
+- PLL: 288 state permutasi legal layer atas. AUF harus dinormalisasi di KEDUA sisi (sebelum dan sesudah):
+  satu sisi menghasilkan 72 kelas, dua sisi menghasilkan 22 kelas (21 PLL + 1 solved).
+- f2lSolved dan signature memakai normalisasi orientasi cube secara default (algoritma dengan slice atau
+  rotasi netto menggeser center). Mode strict tersedia sebagai opsi.
+- invertAlg() menghasilkan bentuk R2'; invertMove() menghasilkan R2. inverseAlgorithm di data case dibuat
+  oleh skrip dari invertAlg, bukan ditulis tangan.
+- Validasi data case wajib lewat adapter engine (parseAlg, invertAlg). new Alg() langsung menerima U3.
+- Arah dependensi: ui → application → domain → engine; infra → domain. Engine tidak mengimpor domain.
+- difficulty: 'easy' | 'medium' | 'hard'. Validator data berupa TypeScript, bukan file JSON Schema.
+- Masalah lingkungan: drive D: kemungkinan bukan NTFS (error "dubious ownership" Git dan ReplaceFileW EIO).
+  Pindahkan proyek ke drive NTFS bila masalah file berulang.
