@@ -231,3 +231,19 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
   keyboard diabaikan), panel playback disembunyikan, dan nama/id/tag/algoritma case disembunyikan; yang
   tampil hanya 4 tombol nama case, umpan balik langsung (hijau/merah + jawaban benar disorot), waktu
   respons, serta Next Case.
+
+## M8A — Timer & Inspection State Machine
+
+- `TimerController` (`src/application/timer/`) menjalankan state machine `idle` → `inspection` → `running` →
+  `finished`/`cancelled`. Waktu dari `performance.now()` (disuntik di test), tampilan diperbarui `tick()` yang
+  dipanggil `requestAnimationFrame` di `TimerDisplay` — tanpa `setInterval`, tanpa state React sebagai waktu.
+- Inspection default 15 detik, bisa diubah/dimatikan. Penalti WCA dihitung saat Turn 1: >15 dtk = `+2`,
+  > 17 dtk = `DNF`; `penaltiesEnabled: false` mematikan keduanya (PRD §2). DNF dan CANCELLED tidak masuk
+  > statistik waktu (PRD §3.1).
+- Trigger: Space → inspection (atau langsung running bila inspection dimatikan); Turn 1 = gerakan layer →
+  running; rotasi x/y/z TIDAK memulai timer (dijaga `isLayerMove()` engine, dan keybind hanya memanggil timer
+  untuk gerakan layer); solved → `finished` + catat result/penalti; Escape → `cancelled`.
+- `tick()` tidak meng-emit snapshot bila nilai waktu tidak berubah, supaya loop rAF tidak memicu render React
+  tanpa perubahan. Test UI menyuntikkan timer berjam beku agar loop rAF tidak menahan `act()`.
+- `TimerDisplay` (`src/ui/timer/`) menampilkan hitungan mundur inspection + badge `+2`/`DNF`, elapsed time,
+  jumlah solve, dan waktu terakhir. Port `KeybindTimerPort` diperluas dengan `handleCancel`/`handleSolved`.

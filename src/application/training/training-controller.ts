@@ -303,6 +303,8 @@ export class TrainingController {
       : 'ready'
     if (this.status === 'solved') {
       this.solvedCount += 1
+      // Timer berhenti saat solved terdeteksi (PRD §3.1).
+      this.timer?.handleSolved?.()
     }
 
     this.emit()

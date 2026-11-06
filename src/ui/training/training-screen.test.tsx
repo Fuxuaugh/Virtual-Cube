@@ -23,6 +23,7 @@ import { loadCases } from '../../domain/load-cases.js'
 import type { TrainingCase } from '../../domain/training-case.js'
 import { cstimerKeybindMap, codeForMove } from '../../domain/keybind/index.js'
 import { parseAlg } from '../../engine/index.js'
+import { TimerController } from '../../application/timer/timer-controller.js'
 import { TrainingScreen } from './training-screen.js'
 
 let f2l: TrainingCase[] = []
@@ -248,6 +249,8 @@ describe('TrainingScreen', () => {
         <TrainingScreen
           cases={[...f2l, ...oll, ...pll]}
           auf=""
+          // Jam beku: timer nyata akan terus meng-update tampilan tiap frame.
+          timer={new TimerController({ now: () => 0 })}
           createPlayer={async () => fake.player}
         />
       )
@@ -636,5 +639,116 @@ describe('TrainingScreen - recognition practice (7C)', () => {
     expect(
       new Set(optionButtons().map((button) => button.textContent)).size
     ).toBe(4)
+  })
+})
+
+describe('TrainingScreen - timer & inspection (8A)', () => {
+  async function renderTimerScreen(): Promise<FakePlayerHandle> {
+    const fake = createFakePlayerHandle()
+    await act(async () => {
+      root.render(
+        <TrainingScreen
+          cases={[...f2l, ...oll, ...pll]}
+          auf=""
+          timer={new TimerController({ now: () => 0 })}
+          createPlayer={async () => fake.player}
+        />
+      )
+    })
+    return fake
+  }
+
+  it('menampilkan TimerDisplay dan Space memulai inspection', async () => {
+    await renderTimerScreen()
+
+    expect(
+      container.querySelector('[data-testid="timer-display"]')
+    ).not.toBeNull()
+    expect(textOf('timer-status')).toBe('Siap')
+
+    await act(async () => {
+      pressCode('Space')
+    })
+
+    expect(textOf('timer-status')).toBe('Inspection')
+    expect(
+      container
+        .querySelector('[data-testid="timer-display"]')
+        ?.getAttribute('data-status')
+    ).toBe('inspection')
+  })
+
+  it('Turn 1 (gerakan layer) memulai running, rotasi x tidak', async () => {
+    await renderTimerScreen()
+
+    await act(async () => {
+      pressCode('Space')
+    })
+    // Rotasi seluruh cube tidak memulai timer.
+    await act(async () => {
+      pressCode('KeyT') // x
+    })
+    expect(textOf('timer-status')).toBe('Inspection')
+
+    // Gerakan layer memulai running (Turn 1).
+    await act(async () => {
+      pressCode('KeyJ') // U
+    })
+    expect(textOf('timer-status')).toBe('Running')
+  })
+
+  it('Escape membatalkan attempt dan solved menghentikan timer', async () => {
+    await renderTimerScreen()
+
+    await act(async () => {
+      pressCode('Space')
+    })
+    act(() => {
+      ;(document.activeElement as HTMLElement | null)?.blur?.()
+    })
+    await act(async () => {
+      pressCode('Escape')
+    })
+
+    expect(
+      container
+        .querySelector('[data-testid="timer-display"]')
+        ?.getAttribute('data-status')
+    ).toBe('cancelled')
+    expect(textOf('timer-solve-count')).toBe('0')
+
+    // Attempt berikutnya: selesaikan F2L-01 lewat keybind → timer berhenti.
+    await act(async () => {
+      container
+        .querySelector<HTMLButtonElement>('[data-testid="mode-specific"]')
+        ?.click()
+    })
+    const select = container.querySelector<HTMLSelectElement>(
+      '[data-testid="case-select"]'
+    )
+    if (!select) throw new Error('select case tidak ada')
+    await act(async () => {
+      select.value = 'F2L-01'
+      select.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+
+    await act(async () => {
+      pressCode('Space')
+    })
+    const algorithm = f2l.find((item) => item.id === 'F2L-01')?.algorithm
+    if (!algorithm) throw new Error('F2L-01 tidak ada')
+    for (const code of keyCodesForAlg(algorithm)) {
+      await act(async () => {
+        pressCode(code)
+      })
+    }
+
+    expect(
+      container
+        .querySelector('[data-testid="timer-display"]')
+        ?.getAttribute('data-status')
+    ).toBe('finished')
+    expect(textOf('timer-status')).toBe('Selesai')
+    expect(textOf('timer-solve-count')).toBe('1')
   })
 })

@@ -130,12 +130,12 @@ Exit: pengguna memilih case dan menyelesaikannya lewat mode yang sesuai.
 
 **8A Timer**
 
-- [ ] P0 — Timer Controller (state machine: Idle → Inspection → Running → Finished/Cancelled).
-- [ ] P0 — `performance.now()` + rAF untuk tampilan.
-- [ ] P0 — Space memulai inspection; Turn 1 valid memulai solve; solved menghentikan.
-- [ ] P0 — Input non-gerakan tidak memulai timer.
-- [ ] P1 — Penalti +2/DNF, pengaturan inspection, reset/retry, Esc batal.
-- [ ] P0 — Test state machine timer dengan fake clock.
+- [x] P0 — Timer Controller (state machine: Idle → Inspection → Running → Finished/Cancelled).
+- [x] P0 — `performance.now()` + rAF untuk tampilan.
+- [x] P0 — Space memulai inspection; Turn 1 valid memulai solve; solved menghentikan.
+- [x] P0 — Input non-gerakan tidak memulai timer.
+- [x] P1 — Penalti +2/DNF, pengaturan inspection, reset/retry, Esc batal.
+- [x] P0 — Test state machine timer dengan fake clock.
 
 **8B Focus Mode**
 

@@ -21,12 +21,20 @@ import {
   type KeybindMap,
 } from '../../domain/keybind/index.js'
 
-/** Port timer untuk keybind (implementasi nyata menyusul di M8). */
+/**
+ * Port timer untuk keybind (dipenuhi `TimerController`, M8).
+ * Space dan gerakan layer berasal dari keybind; `handleSolved` dipanggil
+ * Training Controller saat deteksi solved, `handleCancel` dari shortcut Escape.
+ */
 export interface KeybindTimerPort {
   /** Space: mulai inspection / solve (PRD §3.1). */
   handleSpace(): void
   /** Gerakan layer diterapkan: solve timer mulai di Turn 1. */
   handleLayerMove(move: string): void
+  /** Escape: batalkan attempt berjalan (CANCELLED). */
+  handleCancel?(): void
+  /** Cube solved: hentikan timer dan catat hasil. */
+  handleSolved?(): void
 }
 
 /** Port penerap gerakan ke state (dipenuhi `CubeViewSync`). */

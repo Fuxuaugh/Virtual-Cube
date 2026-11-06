@@ -14,7 +14,7 @@
 
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 
-import type { KeybindTimerPort } from '../../application/keybind/keybind-service.js'
+import { TimerController } from '../../application/timer/timer-controller.js'
 import { AlgorithmPlaybackController } from '../../application/training/algorithm-playback.js'
 import { RecognitionController } from '../../application/training/recognition-controller.js'
 import { TrainingController } from '../../application/training/training-controller.js'
@@ -33,6 +33,7 @@ import {
 } from '../../infra/keybind/keybind-listener.js'
 import { AlgorithmPlaybackPanel } from './algorithm-playback-panel.js'
 import { RecognitionPanel } from './recognition-panel.js'
+import { TimerDisplay } from '../timer/timer-display.js'
 import {
   VirtualCube,
   type VirtualCubePlayerFactory,
@@ -50,13 +51,14 @@ type PracticeMode = 'algorithm' | 'recognition'
 const TRAINING_SHORTCUTS: readonly KeybindShortcut[] = [
   { code: 'Enter', name: 'next-case' },
   { code: 'Backspace', name: 'retry-case' },
+  { code: 'Escape', name: 'cancel-solve' },
 ]
 
 export interface TrainingScreenProps {
   /** Pool case; default dimuat lewat `loadCases()` (F2L + OLL + PLL). */
   cases?: readonly TrainingCase[]
-  /** Port timer (M8); opsional. */
-  timer?: KeybindTimerPort
+  /** Timer (M8); dibuat otomatis bila tidak diberikan. */
+  timer?: TimerController
   /** Pabrik player `VirtualCube` (di-inject di test agar tanpa WebGL). */
   createPlayer?: VirtualCubePlayerFactory
   /** Peta keybind custom. */
@@ -140,7 +142,7 @@ export function TrainingScreen({
 
 interface TrainingSessionProps {
   pool: readonly TrainingCase[]
-  timer?: KeybindTimerPort
+  timer?: TimerController
   createPlayer?: VirtualCubePlayerFactory
   keybindMap?: KeybindMap
   auf?: Auf | 'random'
@@ -156,9 +158,10 @@ function TrainingSession({
   className,
 }: TrainingSessionProps) {
   const [session] = useState(() => {
+    const timerController = timer ?? new TimerController()
     const controller = new TrainingController({
       cases: pool,
-      timer,
+      timer: timerController,
       keybindMap,
     })
     controller.startSession({
@@ -177,9 +180,9 @@ function TrainingSession({
     const recognition = new RecognitionController({ source: controller })
     recognition.sync()
 
-    return { controller, playback, recognition }
+    return { controller, playback, recognition, timer: timerController }
   })
-  const { controller, playback, recognition } = session
+  const { controller, playback, recognition, timer: sessionTimer } = session
   const [practiceMode, setPracticeMode] = useState<PracticeMode>('algorithm')
 
   const snapshot = useSyncExternalStore(
@@ -252,10 +255,14 @@ function TrainingSession({
           }
           if (shortcut.name === 'retry-case') {
             controller.retry()
+            return
+          }
+          if (shortcut.name === 'cancel-solve') {
+            sessionTimer.handleCancel()
           }
         },
       }),
-    [controller, keybindMap, practiceMode]
+    [controller, keybindMap, practiceMode, sessionTimer]
   )
 
   const handlePlayerChange = useCallback(
@@ -277,6 +284,8 @@ function TrainingSession({
         <h1 className="mr-2 text-xl font-bold tracking-tight text-cyan-400">
           Cube Trainer
         </h1>
+
+        <TimerDisplay timer={sessionTimer} />
 
         <div
           className="flex gap-1 rounded-lg bg-slate-800 p-1"

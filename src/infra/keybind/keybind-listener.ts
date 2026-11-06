@@ -16,6 +16,7 @@ import {
   cstimerKeybindMap,
   shouldIgnoreKeybindInput,
   shouldPreventDefault,
+  SYSTEM_KEY_CODES,
   type KeybindAction,
   type KeybindInput,
   type KeybindMap,
@@ -162,7 +163,10 @@ export function attachKeybindListener(
       if (shortcut) {
         const activeElement = getActiveElement()
         if (!isInteractiveElement(activeElement)) {
-          event.preventDefault()
+          // Tombol sistem (Escape/Tab/F1-F12) tidak di-preventDefault.
+          if (!SYSTEM_KEY_CODES.includes(input.code)) {
+            event.preventDefault()
+          }
           options.onShortcut?.(shortcut, event)
         }
         return
