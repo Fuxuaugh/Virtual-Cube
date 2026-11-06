@@ -13,6 +13,18 @@ export {
   validateAlg,
 } from './cube-engine.js'
 export {
+  normalizeOrientation,
+  wholeCubeRotationAlgs,
+} from './normalize-orientation.js'
+export {
+  isOrbitSliceSolved,
+  layerSlots,
+  readOrbit,
+  type LayerSlots,
+  type OrbitData,
+  type OrbitName,
+} from './orbit-reader.js'
+export {
   invertMove,
   isLayerMove,
   isRotationMove,
