@@ -1,22 +1,24 @@
 import { useEffect, useRef } from "react";
 import { TwistyPlayer } from "cubing/twisty";
+import { runSpike03 } from "./spike03";
 
 export default function App() {
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    runSpike03().catch((e) => console.error("spike03 gagal:", e));
+
     const player = new TwistyPlayer({
       puzzle: "3x3x3",
-      alg: "",
+      alg: "R U R' U'",
       controlPanel: "none",
       background: "none",
-      hintFacelets: "floating",
       cameraLatitude: 35,
       cameraLongitude: 0,
     });
-    player.style.width = "600px";
-    player.style.height = "600px";
-    player.style.pointerEvents = "none"; // mematikan drag mouse
+    player.style.width = "500px";
+    player.style.height = "500px";
+    player.style.pointerEvents = "none";
     box.current?.appendChild(player);
     return () => {
       player.remove();
@@ -36,4 +38,3 @@ export default function App() {
     </div>
   );
 }
-
