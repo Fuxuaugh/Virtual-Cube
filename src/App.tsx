@@ -1,16 +1,14 @@
 import { useEffect, useRef } from "react";
 import { TwistyPlayer } from "cubing/twisty";
-import { runSpike03 } from "./spike03";
+import { setupSpike04 } from "./spike04";
 
 export default function App() {
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    runSpike03().catch((e) => console.error("spike03 gagal:", e));
-
     const player = new TwistyPlayer({
       puzzle: "3x3x3",
-      alg: "R U R' U'",
+      tempoScale: 5,
       controlPanel: "none",
       background: "none",
       cameraLatitude: 35,
@@ -20,7 +18,12 @@ export default function App() {
     player.style.height = "500px";
     player.style.pointerEvents = "none";
     box.current?.appendChild(player);
+
+    let cleanup: (() => void) | undefined;
+    setupSpike04(player).then((c) => (cleanup = c));
+
     return () => {
+      cleanup?.();
       player.remove();
     };
   }, []);

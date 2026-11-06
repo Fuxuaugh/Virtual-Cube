@@ -18,7 +18,7 @@ Tujuan: membuktikan asumsi teknis terbesar sebelum membangun apa pun. Kode spike
 
 - [x] P0 — 0.1 React + TS + Vite menjalankan halaman kosong di browser (`npm run dev`).
 - [x] 0 — 0.2 Render `TwistyPlayer` di halaman web dengan kamera tetap yang hanya menampilkan sisi U dan F (cari properti sudut kamera yang tepat, nonaktifkan kontrol mouse). Catat nilai sudut di `docs/decisions.md`.
-- [ ] P0 — 0.3 Terapkan algoritma lewat cubing.js (KPuzzle/KPattern) dan baca state hasilnya.
+- [x] P0 — 0.3 Terapkan algoritma lewat cubing.js (KPuzzle/KPattern) dan baca state hasilnya.
 - [ ] P0 — 0.4 Tangkap input keyboard → jalankan gerakan di engine → dorong ke player, state keduanya identik.
 - [ ] P0 — 0.5 Ekstrak mapping keybind virtual cube + timer dari source csTimer, tulis ke `docs/keybinds.md` (sertakan link file/baris sumber).
 - [ ] P0 — 0.6 Catat apakah rotasi x/y/z memulai timer di csTimer.
