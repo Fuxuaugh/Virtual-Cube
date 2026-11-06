@@ -215,3 +215,19 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
   (tombol/tautan/input) supaya tidak menabrak perilaku keyboard bawaan; gerakan cube tidak dibatasi ini.
 - Tempo playback (0.5x/1x/2x/5x) diteruskan juga ke `VirtualCube` (`tempoScale`) agar animasi TwistyPlayer
   seirama dengan laju langkah playback.
+
+## M7C — Recognition Practice
+
+- `RecognitionController` (`src/application/training/recognition-controller.ts`) memakai sumber case berupa
+  port `RecognitionSource` (`currentCase`/`distractorPool`/`caseRunId`) yang dipenuhi `TrainingController`,
+  jadi mode pengenalan selalu memakai case aktif dan pool kategori yang sama dengan latihan algoritma.
+- Distraktor (`distractor-generator.ts`): 1 jawaban benar + 3 distraktor, unik berdasarkan nama DAN id,
+  urutan diacak. "Kelompok mirip" memakai data yang ada: `tags[0]` (grup F2L dari CSV, 4-6 anggota) bila
+  anggotanya cukup; OLL/PLL tidak punya tag, jadi dipakai seluruh kategori yang sama. Tidak ada
+  pengelompokan yang dikarang.
+- Waktu respons diukur dari ronde tampil (`newRound()` mencatat `now()`) sampai opsi ditekan; `now`
+  disuntikkan sehingga test memakai jam palsu (deterministik). Pilihan terkunci setelah dijawab.
+- UI: mode "Algorithm" / "Recognition" di `TrainingScreen`. Di mode pengenalan, cube statis (gerakan
+  keyboard diabaikan), panel playback disembunyikan, dan nama/id/tag/algoritma case disembunyikan; yang
+  tampil hanya 4 tombol nama case, umpan balik langsung (hijau/merah + jawaban benar disorot), waktu
+  respons, serta Next Case.

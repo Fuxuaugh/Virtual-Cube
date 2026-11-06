@@ -492,3 +492,149 @@ describe('TrainingScreen - playback algoritma (7B)', () => {
     input.remove()
   })
 })
+
+describe('TrainingScreen - recognition practice (7C)', () => {
+  async function renderRecognition(): Promise<FakePlayerHandle> {
+    const fake = createFakePlayerHandle()
+    await act(async () => {
+      root.render(
+        <TrainingScreen
+          cases={[...f2l, ...oll, ...pll]}
+          auf=""
+          createPlayer={async () => fake.player}
+        />
+      )
+    })
+
+    // Pilih case tertentu supaya jawaban benar bisa dipastikan di test.
+    await act(async () => {
+      container
+        .querySelector<HTMLButtonElement>('[data-testid="mode-specific"]')
+        ?.click()
+    })
+    const select = container.querySelector<HTMLSelectElement>(
+      '[data-testid="case-select"]'
+    )
+    if (!select) throw new Error('select case tidak ada')
+    await act(async () => {
+      select.value = 'F2L-01'
+      select.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+
+    await act(async () => {
+      container
+        .querySelector<HTMLButtonElement>(
+          '[data-testid="practice-mode-recognition"]'
+        )
+        ?.click()
+    })
+
+    return fake
+  }
+
+  function optionButtons(): HTMLButtonElement[] {
+    return Array.from(
+      container.querySelectorAll<HTMLButtonElement>(
+        '[data-testid^="recognition-option-"]'
+      )
+    )
+  }
+
+  it('menampilkan 4 opsi, menyembunyikan nama/algoritma, dan cube statis', async () => {
+    await renderRecognition()
+
+    expect(optionButtons()).toHaveLength(4)
+    expect(
+      new Set(optionButtons().map((button) => button.textContent)).size
+    ).toBe(4)
+    expect(
+      container.querySelector('[data-testid="case-hidden"]')
+    ).not.toBeNull()
+    expect(container.querySelector('[data-testid="case-name"]')).toBeNull()
+    expect(container.querySelector('[data-testid="case-algorithm"]')).toBeNull()
+    expect(container.querySelector('[data-testid="case-id"]')).toBeNull()
+    expect(container.querySelector('[data-testid="playback-panel"]')).toBeNull()
+    expect(
+      container.querySelector('[data-testid="recognition-panel"]')
+    ).not.toBeNull()
+  })
+
+  it('gerakan keyboard diabaikan selama mode recognition', async () => {
+    const fake = await renderRecognition()
+
+    await act(async () => {
+      pressCode('KeyJ')
+      pressCode('KeyT')
+    })
+
+    expect(textOf('move-count')).toBe('0')
+    expect(fake.moves).toEqual([])
+  })
+
+  it('umpan balik visual: benar berwarna hijau, salah merah + jawaban benar disorot', async () => {
+    await renderRecognition()
+
+    const correctName = f2l.find((item) => item.id === 'F2L-01')?.name
+    const correctButton = optionButtons().find(
+      (button) => button.textContent === correctName
+    )
+    if (!correctButton) throw new Error('opsi benar tidak ditemukan')
+
+    await act(async () => {
+      correctButton.click()
+    })
+
+    expect(correctButton.getAttribute('data-state')).toBe('correct')
+    expect(textOf('recognition-feedback')).toContain('Benar!')
+    expect(textOf('recognition-attempts')).toBe('1')
+    expect(textOf('recognition-correct')).toBe('1')
+    expect(textOf('recognition-response')).not.toBe('—')
+  })
+
+  it('jawaban salah: opsi salah merah, jawaban benar tetap disorot, pilihan terkunci', async () => {
+    await renderRecognition()
+
+    const correctName = f2l.find((item) => item.id === 'F2L-01')?.name
+    const wrongButton = optionButtons().find(
+      (button) => button.textContent !== correctName
+    )
+    if (!wrongButton) throw new Error('opsi salah tidak ditemukan')
+
+    await act(async () => {
+      wrongButton.click()
+    })
+
+    expect(wrongButton.getAttribute('data-state')).toBe('wrong')
+    expect(textOf('recognition-feedback')).toContain('Salah')
+    expect(textOf('recognition-feedback')).toContain(correctName ?? '')
+    expect(textOf('recognition-correct')).toBe('0')
+    expect(optionButtons().every((button) => button.disabled)).toBe(true)
+    expect(
+      optionButtons()
+        .filter((button) => button.getAttribute('data-state') === 'correct')
+        .map((button) => button.textContent)
+    ).toEqual([correctName])
+  })
+
+  it('Next Case memulai ronde pengenalan berikutnya', async () => {
+    await renderRecognition()
+
+    await act(async () => {
+      optionButtons()[0].click()
+    })
+    expect(textOf('recognition-feedback')).not.toBe('')
+
+    await act(async () => {
+      container
+        .querySelector<HTMLButtonElement>('[data-testid="recognition-next"]')
+        ?.click()
+    })
+
+    expect(textOf('recognition-attempts')).toBe('1')
+    expect(optionButtons().every((button) => !button.disabled)).toBe(true)
+    expect(optionButtons()).toHaveLength(4)
+    expect(
+      new Set(optionButtons().map((button) => button.textContent)).size
+    ).toBe(4)
+  })
+})

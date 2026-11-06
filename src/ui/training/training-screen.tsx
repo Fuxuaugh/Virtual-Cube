@@ -16,6 +16,7 @@ import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 
 import type { KeybindTimerPort } from '../../application/keybind/keybind-service.js'
 import { AlgorithmPlaybackController } from '../../application/training/algorithm-playback.js'
+import { RecognitionController } from '../../application/training/recognition-controller.js'
 import { TrainingController } from '../../application/training/training-controller.js'
 import {
   cstimerKeybindMap,
@@ -31,6 +32,7 @@ import {
   type KeybindShortcut,
 } from '../../infra/keybind/keybind-listener.js'
 import { AlgorithmPlaybackPanel } from './algorithm-playback-panel.js'
+import { RecognitionPanel } from './recognition-panel.js'
 import {
   VirtualCube,
   type VirtualCubePlayerFactory,
@@ -42,6 +44,9 @@ const CATEGORIES: readonly CaseCategory[] = ['F2L', 'OLL', 'PLL']
  * Shortcut navigasi cepat supaya ritme fokus tidak terputus. Kode yang dipakai
  * (Enter/Backspace) tidak dipakai peta gerakan csTimer di `docs/keybinds.md`.
  */
+/** Mode latihan: eksekusi algoritma (7A/7B) atau pengenalan case (7C). */
+type PracticeMode = 'algorithm' | 'recognition'
+
 const TRAINING_SHORTCUTS: readonly KeybindShortcut[] = [
   { code: 'Enter', name: 'next-case' },
   { code: 'Backspace', name: 'retry-case' },
@@ -151,23 +156,31 @@ function TrainingSession({
   className,
 }: TrainingSessionProps) {
   const [session] = useState(() => {
-    const created = new TrainingController({ cases: pool, timer, keybindMap })
-    created.startSession({
+    const controller = new TrainingController({
+      cases: pool,
+      timer,
+      keybindMap,
+    })
+    controller.startSession({
       category: 'F2L',
       mode: 'random',
       auf: auf ?? 'random',
     })
 
-    const generated = created.currentGenerated()
+    const generated = controller.currentGenerated()
     const playback = new AlgorithmPlaybackController({
-      target: created,
+      target: controller,
       algorithm: generated?.trainingCase.algorithm ?? '',
       alignmentAuf: generated?.auf ?? '',
     })
 
-    return { controller: created, playback }
+    const recognition = new RecognitionController({ source: controller })
+    recognition.sync()
+
+    return { controller, playback, recognition }
   })
-  const { controller, playback } = session
+  const { controller, playback, recognition } = session
+  const [practiceMode, setPracticeMode] = useState<PracticeMode>('algorithm')
 
   const snapshot = useSyncExternalStore(
     controller.subscribe,
@@ -192,6 +205,19 @@ function TrainingSession({
     })
   }, [controller, playback, snapshot.runId])
 
+  const recognitionSnapshot = useSyncExternalStore(
+    recognition.subscribe,
+    recognition.getSnapshot,
+    recognition.getSnapshot
+  )
+
+  // Mode pengenalan selalu mengikuti case aktif (dan ronde baru saat berganti).
+  useEffect(() => {
+    if (practiceMode === 'recognition') {
+      recognition.sync()
+    }
+  }, [practiceMode, recognition, snapshot.runId])
+
   // Loop animasi playback: requestAnimationFrame (tanpa setInterval).
   useEffect(() => {
     if (!playbackSnapshot.isPlaying) {
@@ -211,7 +237,13 @@ function TrainingSession({
     () =>
       attachKeybindListener({
         map: keybindMap ?? cstimerKeybindMap,
-        onAction: (_action, _event, input) => controller.handleKey(input),
+        onAction: (_action, _event, input) => {
+          // Mode pengenalan: cube statis, gerakan keyboard dinonaktifkan.
+          if (practiceMode === 'recognition') {
+            return
+          }
+          controller.handleKey(input)
+        },
         shortcuts: TRAINING_SHORTCUTS,
         onShortcut: (shortcut) => {
           if (shortcut.name === 'next-case') {
@@ -223,7 +255,7 @@ function TrainingSession({
           }
         },
       }),
-    [controller, keybindMap]
+    [controller, keybindMap, practiceMode]
   )
 
   const handlePlayerChange = useCallback(
@@ -328,6 +360,39 @@ function TrainingSession({
           </select>
         )}
 
+        <div
+          className="flex gap-1 rounded-lg bg-slate-800 p-1"
+          role="group"
+          aria-label="Jenis latihan"
+        >
+          <button
+            type="button"
+            data-testid="practice-mode-algorithm"
+            aria-pressed={practiceMode === 'algorithm'}
+            onClick={() => setPracticeMode('algorithm')}
+            className={`rounded px-3 py-1 text-sm font-semibold ${
+              practiceMode === 'algorithm'
+                ? 'bg-cyan-500 text-slate-900'
+                : 'text-slate-200 hover:bg-slate-700'
+            }`}
+          >
+            Algorithm
+          </button>
+          <button
+            type="button"
+            data-testid="practice-mode-recognition"
+            aria-pressed={practiceMode === 'recognition'}
+            onClick={() => setPracticeMode('recognition')}
+            className={`rounded px-3 py-1 text-sm font-semibold ${
+              practiceMode === 'recognition'
+                ? 'bg-cyan-500 text-slate-900'
+                : 'text-slate-200 hover:bg-slate-700'
+            }`}
+          >
+            Recognition
+          </button>
+        </div>
+
         <div className="ml-auto flex gap-2">
           <button
             type="button"
@@ -367,6 +432,10 @@ function TrainingSession({
             {snapshot.error ? (
               <p className="text-sm text-red-400" data-testid="case-error">
                 {snapshot.error}
+              </p>
+            ) : practiceMode === 'recognition' ? (
+              <p className="text-sm text-slate-400" data-testid="case-hidden">
+                Nama, id, dan algoritma case disembunyikan di mode pengenalan.
               </p>
             ) : activeCase ? (
               <dl className="space-y-1 text-sm">
@@ -410,22 +479,37 @@ function TrainingSession({
             )}
           </section>
 
-          <AlgorithmPlaybackPanel
-            moves={playbackSnapshot.algorithmMoves}
-            activeIndex={playbackSnapshot.activeAlgorithmIndex}
-            alignmentAuf={playbackSnapshot.alignmentAuf}
-            isPlaying={playbackSnapshot.isPlaying}
-            isComplete={playbackSnapshot.isComplete}
-            canStepBackward={!playbackSnapshot.isAtStart}
-            canStepForward={!playbackSnapshot.isComplete}
-            tempoScale={playbackSnapshot.tempoScale}
-            onPlay={() => playback.play()}
-            onPause={() => playback.pause()}
-            onStepForward={() => playback.stepForward()}
-            onStepBackward={() => playback.stepBackward()}
-            onReset={() => playback.reset()}
-            onTempoScaleChange={(scale) => playback.setTempoScale(scale)}
-          />
+          {practiceMode === 'algorithm' ? (
+            <AlgorithmPlaybackPanel
+              moves={playbackSnapshot.algorithmMoves}
+              activeIndex={playbackSnapshot.activeAlgorithmIndex}
+              alignmentAuf={playbackSnapshot.alignmentAuf}
+              isPlaying={playbackSnapshot.isPlaying}
+              isComplete={playbackSnapshot.isComplete}
+              canStepBackward={!playbackSnapshot.isAtStart}
+              canStepForward={!playbackSnapshot.isComplete}
+              tempoScale={playbackSnapshot.tempoScale}
+              onPlay={() => playback.play()}
+              onPause={() => playback.pause()}
+              onStepForward={() => playback.stepForward()}
+              onStepBackward={() => playback.stepBackward()}
+              onReset={() => playback.reset()}
+              onTempoScaleChange={(scale) => playback.setTempoScale(scale)}
+            />
+          ) : (
+            <RecognitionPanel
+              options={recognitionSnapshot.options}
+              selectedId={recognitionSnapshot.selectedId}
+              correctId={recognitionSnapshot.correctId}
+              locked={recognitionSnapshot.locked}
+              isCorrect={recognitionSnapshot.isCorrect}
+              responseMs={recognitionSnapshot.responseMs}
+              attempts={recognitionSnapshot.attempts}
+              correctCount={recognitionSnapshot.correctCount}
+              onAnswer={(optionId) => recognition.answer(optionId)}
+              onNext={() => controller.nextCase()}
+            />
+          )}
 
           <section className="rounded-xl bg-slate-800/60 p-4">
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">

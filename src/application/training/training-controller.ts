@@ -262,6 +262,21 @@ export class TrainingController {
     return this.generated
   }
 
+  /** Case aktif (dipakai mode pengenalan). */
+  currentCase(): TrainingCase | null {
+    return this.activeCase
+  }
+
+  /** Kandidat distraktor untuk mode pengenalan (kategori aktif). */
+  distractorPool(): TrainingCase[] {
+    return this.poolForActiveCategory()
+  }
+
+  /** Nomor urut pemuatan case (naik tiap Next Case/Retry). */
+  caseRunId(): number {
+    return this.runId
+  }
+
   /** Case pada pool kategori aktif (setelah filter). */
   poolForActiveCategory(): TrainingCase[] {
     return filterCases(this.cases, {

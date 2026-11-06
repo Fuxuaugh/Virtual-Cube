@@ -120,7 +120,7 @@ Exit: kontrol utama sesuai mapping csTimer yang terverifikasi.
 
 **7C Recognition**
 
-- [ ] P1 — Recognition Practice (4 opsi, distraktor dari kelompok mirip, catat waktu respons dan benar/salah).
+- [x] P1 — Recognition Practice (4 opsi, distraktor dari kelompok mirip, catat waktu respons dan benar/salah).
 
 Exit: pengguna memilih case dan menyelesaikannya lewat mode yang sesuai.
 
