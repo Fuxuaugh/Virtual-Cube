@@ -109,9 +109,9 @@ Exit: kontrol utama sesuai mapping csTimer yang terverifikasi.
 
 **7A Inti**
 
-- [ ] P0 — Training Controller, Session Manager.
-- [ ] P0 — Random Case dan Specific Case untuk F2L/OLL/PLL.
-- [ ] P0 — Algorithm Practice (tanpa timer dulu): tampil case → eksekusi → deteksi solved.
+- [x] P0 — Training Controller, Session Manager.
+- [x] P0 — Random Case dan Specific Case untuk F2L/OLL/PLL.
+- [x] P0 — Algorithm Practice (tanpa timer dulu): tampil case → eksekusi → deteksi solved.
 
 **7B Pendukung**
 

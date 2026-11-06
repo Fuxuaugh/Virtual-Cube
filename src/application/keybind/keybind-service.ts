@@ -29,11 +29,18 @@ export interface KeybindTimerPort {
   handleLayerMove(move: string): void
 }
 
+/** Port penerap gerakan ke state (dipenuhi `CubeViewSync`). */
+export interface CubeMoveApplier {
+  applyMove(state: CubeState, move: string): CubeState
+}
+
 export interface KeybindServiceOptions {
   /** Peta keybind; default preset csTimer. */
   map?: KeybindMap
   /** Port timer opsional. */
   timer?: KeybindTimerPort
+  /** Penerap gerakan; default langsung ke engine (tanpa tampilan). */
+  applier?: CubeMoveApplier
 }
 
 export interface KeybindHandleResult {
@@ -48,10 +55,12 @@ export interface KeybindHandleResult {
 export class KeybindService {
   private readonly map: KeybindMap
   private readonly timer?: KeybindTimerPort
+  private readonly applier?: CubeMoveApplier
 
   constructor(options: KeybindServiceOptions = {}) {
     this.map = options.map ?? cstimerKeybindMap
     this.timer = options.timer
+    this.applier = options.applier
   }
 
   /** True bila input ini harus diabaikan (modifier sistem, repeat, input teks). */
@@ -78,7 +87,9 @@ export class KeybindService {
       return { state, action, handled: true }
     }
 
-    const next = applyAlg(state, action.move)
+    const next = this.applier
+      ? this.applier.applyMove(state, action.move)
+      : applyAlg(state, action.move)
     if (action.startsTimer) {
       this.timer?.handleLayerMove(action.move)
     }

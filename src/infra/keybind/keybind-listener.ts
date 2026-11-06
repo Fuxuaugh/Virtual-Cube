@@ -28,8 +28,8 @@ export interface KeybindEventTarget {
 }
 
 export interface KeybindListenerOptions {
-  /** Dipanggil untuk tiap aksi yang dikenali. */
-  onAction: (action: KeybindAction, event: Event) => void
+  /** Dipanggil untuk tiap aksi yang dikenali (beserta input hasil terjemahan). */
+  onAction: (action: KeybindAction, event: Event, input: KeybindInput) => void
   /** Peta keybind; default preset csTimer. */
   map?: KeybindMap
   /** True bila listener boleh menangani input (mis. fokus di area latihan). */
@@ -127,7 +127,7 @@ export function attachKeybindListener(
       return
     }
 
-    options.onAction(action, event)
+    options.onAction(action, event, input)
   }
 
   target.addEventListener('keydown', handler)

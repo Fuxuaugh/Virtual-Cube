@@ -8,6 +8,7 @@ export {
   CSTIMER_KEYBINDS,
   cstimerKeybindMap,
   createKeybindMap,
+  codeForMove,
   findKeybindConflicts,
   isCubeMoveAction,
   isTimerAction,

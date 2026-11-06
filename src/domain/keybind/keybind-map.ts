@@ -270,6 +270,14 @@ export function isTimerAction(
 ): action is Extract<KeybindAction, { kind: 'timer-space' }> {
   return action?.kind === 'timer-space'
 }
+/**
+ * Kode tombol pertama yang memetakan sebuah notasi gerakan, mis. `U` → `KeyJ`.
+ * Dipakai untuk petunjuk UI dan test; `undefined` bila tidak ada tombolnya
+ * (mis. `M` yang belum terverifikasi).
+ */
+export function codeForMove(map: KeybindMap, move: string): string | undefined {
+  return map.definitions.find((definition) => definition.move === move)?.code
+}
 /** Peta default (preset csTimer tanpa override). */
 export const cstimerKeybindMap: KeybindMap = createKeybindMap()
 

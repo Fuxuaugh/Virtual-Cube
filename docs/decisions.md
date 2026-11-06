@@ -178,3 +178,22 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
   input/textarea/select/contenteditable.
 - Custom keybind + validasi notasi + deteksi konflik tombol sistem tersedia sebagai API
   (`createKeybindMap`, `findKeybindConflicts`); UI pengaturan keybind (bagian 6.3) belum dibuat.
+
+## M7A — Core Training System
+
+- `TrainingController` (`src/application/training/`) memegang sesi: kategori, mode (Random/Specific), case
+  aktif, state engine, status (`idle`/`ready`/`solved`), jumlah gerakan, jumlah solved, dan error (pool
+  kosong). Snapshot-nya stabil + `subscribe()` sehingga dipakai React lewat `useSyncExternalStore`.
+- Alur satu arah: keybind → `KeybindService` → Cube Engine → `VirtualCube` → cek solved. `KeybindService`
+  menerima port `applier` (dipenuhi `CubeViewSync`) supaya gerakan yang sama juga didorong ke tampilan dan
+  tidak diterapkan dua kali.
+- Solved = `isSolved()` engine (tidak bergantung rotasi, PRD §2/§6). Opsi `allowFinalAuf` (default `false` =
+  strict sesuai PRD §2) menoleransi AUF akhir; helper `isSolvedWithFinalAuf()` diuji langsung. Gerakan
+  diabaikan setelah solved sampai Next Case / Retry.
+- Player `VirtualCube` dipasang belakangan lewat `attachPlayer()` karena player dibuat asinkron oleh
+  komponen; setiap `loadCase()` mereset tampilan lalu memasang setup alg case supaya gerakan case
+  sebelumnya tidak tersisa di TwistyPlayer.
+- UI: `src/ui/training/training-screen.tsx` (pemilih kategori F2L/OLL/PLL, mode Random/Specific, tombol
+  Next Case & Retry, panel info case: id/nama/tag/algoritma, panel status) + listener keybind terpusat aktif
+  di halaman latihan. `src/App.tsx` kini layar latihan, bukan placeholder.
+- Timer belum ada (M8); port `KeybindTimerPort` sudah diteruskan dari layar ke service.
