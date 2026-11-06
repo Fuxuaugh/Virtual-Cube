@@ -752,3 +752,155 @@ describe('TrainingScreen - timer & inspection (8A)', () => {
     expect(textOf('timer-solve-count')).toBe('1')
   })
 })
+
+describe('TrainingScreen - Focus Mode (8B)', () => {
+  async function renderFocusScreen(): Promise<FakePlayerHandle> {
+    const fake = createFakePlayerHandle()
+    await act(async () => {
+      root.render(
+        <TrainingScreen
+          cases={[...f2l, ...oll, ...pll]}
+          auf=""
+          timer={new TimerController({ now: () => 0 })}
+          createPlayer={async () => fake.player}
+        />
+      )
+    })
+    return fake
+  }
+
+  function attr(selector: string, name: string): string | null {
+    return container.querySelector(selector)?.getAttribute(name) ?? null
+  }
+
+  function classOf(selector: string): string {
+    return container.querySelector(selector)?.className ?? ''
+  }
+
+  async function selectSpecificCase(caseId: string): Promise<void> {
+    await act(async () => {
+      container
+        .querySelector<HTMLButtonElement>('[data-testid="mode-specific"]')
+        ?.click()
+    })
+    const select = container.querySelector<HTMLSelectElement>(
+      '[data-testid="case-select"]'
+    )
+    if (!select) throw new Error('select case tidak ada')
+    await act(async () => {
+      select.value = caseId
+      select.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+  }
+
+  async function pressAlg(alg: string): Promise<void> {
+    for (const code of keyCodesForAlg(alg)) {
+      await act(async () => {
+        pressCode(code)
+      })
+    }
+  }
+
+  it('aktif saat Turn 1 (Running) dan menyembunyikan UI pendukung', async () => {
+    await renderFocusScreen()
+
+    expect(attr('[data-testid="training-screen"]', 'data-focus')).toBe('false')
+    expect(attr('header', 'data-focus-hidden')).toBe('false')
+    expect(classOf('header')).toContain('opacity-100')
+    expect(attr('aside', 'data-focus-hidden')).toBe('false')
+
+    // Inspection masih UI normal (PRD §3.1).
+    await act(async () => {
+      pressCode('Space')
+    })
+    expect(attr('[data-testid="training-screen"]', 'data-focus')).toBe('false')
+
+    // Turn 1 → Focus Mode.
+    await act(async () => {
+      pressCode('KeyJ')
+    })
+
+    expect(attr('[data-testid="training-screen"]', 'data-focus')).toBe('true')
+    expect(attr('header', 'data-focus-hidden')).toBe('true')
+    expect(classOf('header')).toContain('opacity-0')
+    expect(classOf('header')).toContain('pointer-events-none')
+    expect(classOf('header')).toContain('transition-opacity')
+    expect(attr('header', 'aria-hidden')).toBe('true')
+    expect(attr('aside', 'data-focus-hidden')).toBe('true')
+    expect(classOf('aside')).toContain('opacity-0')
+    // Timer pindah ke kanan-tengah dan tetap tampil.
+    expect(attr('[data-testid="timer-slot"]', 'data-focus')).toBe('true')
+    expect(classOf('[data-testid="timer-slot"]')).toContain('fixed')
+    expect(classOf('[data-testid="timer-slot"]')).toContain('scale-125')
+    expect(textOf('timer-status')).toBe('Running')
+    // Cube membesar (kelas visual).
+    expect(classOf('[data-testid="virtual-cube"]')).toContain('h-[70vh]')
+  })
+
+  it('input gerakan keyboard tetap responsif di tengah Focus Mode', async () => {
+    const fake = await renderFocusScreen()
+    await selectSpecificCase('F2L-01')
+
+    await act(async () => {
+      pressCode('Space')
+    })
+    await act(async () => {
+      pressCode('KeyJ') // Turn 1 → focus
+    })
+    expect(attr('[data-testid="training-screen"]', 'data-focus')).toBe('true')
+
+    // Lanjutkan algoritma selagi focus: tiap gerakan harus tetap diterapkan.
+    await pressAlg("R U' R'")
+
+    expect(textOf('move-count')).toBe('4')
+    expect(fake.moves).toEqual(['U', 'R', "U'", "R'"])
+    expect(textOf('status')).toBe('Solved!')
+  })
+
+  it('UI kembali normal setelah solved', async () => {
+    await renderFocusScreen()
+    await selectSpecificCase('F2L-01')
+
+    const algorithm = f2l.find((item) => item.id === 'F2L-01')?.algorithm
+    if (!algorithm) throw new Error('F2L-01 tidak ada')
+
+    await act(async () => {
+      pressCode('Space')
+    })
+    await pressAlg(algorithm)
+
+    expect(attr('[data-testid="training-screen"]', 'data-focus')).toBe('false')
+    expect(attr('header', 'data-focus-hidden')).toBe('false')
+    expect(classOf('header')).toContain('opacity-100')
+    expect(attr('aside', 'data-focus-hidden')).toBe('false')
+    expect(attr('[data-testid="timer-slot"]', 'data-focus')).toBe('false')
+    expect(
+      container
+        .querySelector('[data-testid="timer-display"]')
+        ?.getAttribute('data-status')
+    ).toBe('finished')
+  })
+
+  it('Escape membatalkan solve dan UI kembali normal', async () => {
+    await renderFocusScreen()
+
+    await act(async () => {
+      pressCode('Space')
+    })
+    await act(async () => {
+      pressCode('KeyJ')
+    })
+    expect(attr('[data-testid="training-screen"]', 'data-focus')).toBe('true')
+
+    act(() => {
+      ;(document.activeElement as HTMLElement | null)?.blur?.()
+    })
+    await act(async () => {
+      pressCode('Escape')
+    })
+
+    expect(attr('[data-testid="training-screen"]', 'data-focus')).toBe('false')
+    expect(attr('aside', 'data-focus-hidden')).toBe('false')
+    expect(textOf('timer-status')).toBe('Dibatalkan')
+  })
+})

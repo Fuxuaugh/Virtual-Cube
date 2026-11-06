@@ -247,3 +247,16 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
   tanpa perubahan. Test UI menyuntikkan timer berjam beku agar loop rAF tidak menahan `act()`.
 - `TimerDisplay` (`src/ui/timer/`) menampilkan hitungan mundur inspection + badge `+2`/`DNF`, elapsed time,
   jumlah solve, dan waktu terakhir. Port `KeybindTimerPort` diperluas dengan `handleCancel`/`handleSolved`.
+
+## M8B — Focus Mode
+
+- Aturan murni di `src/application/timer/focus-mode.ts`: Focus Mode aktif hanya saat status timer `running`
+  (Turn 1) dan berhenti pada `finished`/`cancelled`/`idle`. Saat `inspection` UI tetap normal (PRD §3.1).
+- Layout di `TrainingScreen`: header (kategori/mode/Next/Retry) dan sidebar (info case, panel playback/
+  recognition, status) memakai `transition-opacity duration-300` + `opacity-0 pointer-events-none` +
+  `aria-hidden` saat fokus; cube membesar (`h-[70vh]`); timer dipindah ke slot sendiri yang menjadi
+  `fixed right-8 top-1/2 scale-125` sehingga terbaca di kanan-tengah dan TIDAK ikut memudar.
+- Transisi murni CSS (tanpa timer JS), jadi tidak menunda input: listener keybind tetap satu di `window`.
+  Diuji: gerakan keyboard tetap diterapkan (move count + player) selagi Focus Mode aktif.
+- UI kembali normal (fade in) saat solved, Escape, atau reset — diuji lewat atribut `data-focus`,
+  `data-focus-hidden`, dan kelas `opacity-100`.

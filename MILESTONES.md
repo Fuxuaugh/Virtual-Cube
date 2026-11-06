@@ -139,9 +139,9 @@ Exit: pengguna memilih case dan menyelesaikannya lewat mode yang sesuai.
 
 **8B Focus Mode**
 
-- [ ] P0 — Layout Focus Mode (cube tengah besar, timer kanan-tengah).
-- [ ] P0 — Sembunyikan sidebar, panel algoritma, kontrol; dissolve otomatis di Turn 1; UI kembali setelah solve.
-- [ ] P1 — Transisi halus yang tidak menghambat input.
+- [x] P0 — Layout Focus Mode (cube tengah besar, timer kanan-tengah).
+- [x] P0 — Sembunyikan sidebar, panel algoritma, kontrol; dissolve otomatis di Turn 1; UI kembali setelah solve.
+- [x] P1 — Transisi halus yang tidak menghambat input.
 
 Exit: Space → Inspection → Turn 1 → Focus Mode → Solve → Result berjalan benar.
 

@@ -14,6 +14,7 @@
 
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 
+import { isFocusModeActive } from '../../application/timer/focus-mode.js'
 import { TimerController } from '../../application/timer/timer-controller.js'
 import { AlgorithmPlaybackController } from '../../application/training/algorithm-playback.js'
 import { RecognitionController } from '../../application/training/recognition-controller.js'
@@ -275,17 +276,30 @@ function TrainingSession({
   const poolCases = controller.poolForActiveCategory()
   const activeCase = snapshot.activeCase
 
+  const timerSnapshot = useSyncExternalStore(
+    sessionTimer.subscribe,
+    sessionTimer.getSnapshot,
+    sessionTimer.getSnapshot
+  )
+  // Focus Mode otomatis saat timer Running (Turn 1); UI kembali setelah selesai/batal.
+  const focusActive = isFocusModeActive(timerSnapshot.status)
+
   return (
     <div
       className={`flex min-h-screen flex-col gap-4 bg-slate-900 p-6 text-slate-100 ${className ?? ''}`}
       data-testid="training-screen"
+      data-focus={focusActive ? 'true' : 'false'}
     >
-      <header className="flex flex-wrap items-center gap-3">
+      <header
+        className={`flex flex-wrap items-center gap-3 transition-opacity duration-300 ${
+          focusActive ? 'pointer-events-none opacity-0' : 'opacity-100'
+        }`}
+        data-focus-hidden={focusActive ? 'true' : 'false'}
+        aria-hidden={focusActive}
+      >
         <h1 className="mr-2 text-xl font-bold tracking-tight text-cyan-400">
           Cube Trainer
         </h1>
-
-        <TimerDisplay timer={sessionTimer} />
 
         <div
           className="flex gap-1 rounded-lg bg-slate-800 p-1"
@@ -422,10 +436,24 @@ function TrainingSession({
         </div>
       </header>
 
+      <div
+        className={`transition-all duration-300 ${
+          focusActive
+            ? 'fixed top-1/2 right-8 z-20 -translate-y-1/2 scale-125'
+            : 'static scale-100'
+        }`}
+        data-testid="timer-slot"
+        data-focus={focusActive ? 'true' : 'false'}
+      >
+        <TimerDisplay timer={sessionTimer} />
+      </div>
+
       <main className="flex flex-1 flex-col gap-4 lg:flex-row">
         <section className="flex flex-1 items-center justify-center rounded-xl bg-slate-950/60 p-4">
           <VirtualCube
-            className="h-[420px] w-full max-w-md"
+            className={`w-full transition-all duration-300 ${
+              focusActive ? 'h-[70vh] max-w-2xl' : 'h-[420px] max-w-md'
+            }`}
             setupAlg={snapshot.setupAlg ?? ''}
             tempoScale={playbackSnapshot.tempoScale}
             createPlayer={createPlayer}
@@ -433,7 +461,13 @@ function TrainingSession({
           />
         </section>
 
-        <aside className="flex w-full flex-col gap-4 lg:w-80">
+        <aside
+          className={`flex w-full flex-col gap-4 transition-opacity duration-300 lg:w-80 ${
+            focusActive ? 'pointer-events-none opacity-0' : 'opacity-100'
+          }`}
+          data-focus-hidden={focusActive ? 'true' : 'false'}
+          aria-hidden={focusActive}
+        >
           <section className="rounded-xl bg-slate-800/60 p-4">
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">
               Info Case
