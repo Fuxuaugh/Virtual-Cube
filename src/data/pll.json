@@ -1,0 +1,236 @@
+[
+  {
+    "id": "PLL-Ub",
+    "category": "PLL",
+    "name": "Ub",
+    "algorithm": "R2 U R U R' U' R' U' R' U R'",
+    "inverseAlgorithm": "R U' R U R U R U' R' U' R2'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Ua",
+    "category": "PLL",
+    "name": "Ua",
+    "algorithm": "R U' R U R U R U' R' U' R2",
+    "inverseAlgorithm": "R2' U R U R' U' R' U' R' U R'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Z",
+    "category": "PLL",
+    "name": "Z",
+    "algorithm": "M2' U M2' U M' U2 M2' U2 M'",
+    "inverseAlgorithm": "M U2' M2 U2' M U' M2 U' M2",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": [],
+    "metadata": {
+      "auf": "U2"
+    }
+  },
+  {
+    "id": "PLL-H",
+    "category": "PLL",
+    "name": "H",
+    "algorithm": "M2' U M2' U2 M2' U M2'",
+    "inverseAlgorithm": "M2 U' M2 U2' M2 U' M2",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Aa",
+    "category": "PLL",
+    "name": "Aa",
+    "algorithm": "x R' U R' D2 R U' R' D2 R2 x'",
+    "inverseAlgorithm": "x R2' D2' R U R' D2' R U' R x'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Ab",
+    "category": "PLL",
+    "name": "Ab",
+    "algorithm": "x R2' D2 R U R' D2 R U' R x'",
+    "inverseAlgorithm": "x R' U R' D2' R U' R' D2' R2 x'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-E",
+    "category": "PLL",
+    "name": "E",
+    "algorithm": "x' R U' R' D R U R' D' R U R' D R U' R' D' x",
+    "inverseAlgorithm": "x' D R U R' D' R U' R' D R U' R' D' R U R' x",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Ra",
+    "category": "PLL",
+    "name": "Ra",
+    "algorithm": "R U' R' U' R U R D R' U' R D' R' U2 R'",
+    "inverseAlgorithm": "R U2' R D R' U R D' R' U' R' U R U R'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": [],
+    "metadata": {
+      "auf": "U'"
+    }
+  },
+  {
+    "id": "PLL-Rb",
+    "category": "PLL",
+    "name": "Rb",
+    "algorithm": "R' U2 R U2' R' F R U R' U' R' F' R2",
+    "inverseAlgorithm": "R2' F R U R U' R' F' R U2 R' U2' R",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": [],
+    "metadata": {
+      "auf": "U'"
+    }
+  },
+  {
+    "id": "PLL-Ja",
+    "category": "PLL",
+    "name": "Ja",
+    "algorithm": "R' U L' U2 R U' R' U2 R L",
+    "inverseAlgorithm": "L' R' U2' R U R' U2' L U' R",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": [],
+    "metadata": {
+      "auf": "U'"
+    }
+  },
+  {
+    "id": "PLL-Jb",
+    "category": "PLL",
+    "name": "Jb",
+    "algorithm": "R U R' F' R U R' U' R' F R2 U' R'",
+    "inverseAlgorithm": "R U R2' F' R U R U' R' F R U' R'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": [],
+    "metadata": {
+      "auf": "U'"
+    }
+  },
+  {
+    "id": "PLL-T",
+    "category": "PLL",
+    "name": "T",
+    "algorithm": "R U R' U' R' F R2 U' R' U' R U R' F'",
+    "inverseAlgorithm": "F R U' R' U R U R2' F' R U R U' R'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-F",
+    "category": "PLL",
+    "name": "F",
+    "algorithm": "R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R",
+    "inverseAlgorithm": "R' U' R U' R' U R U R2' F' R U R U' R' F U R",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-V",
+    "category": "PLL",
+    "name": "V",
+    "algorithm": "R' U R' U' y R' F' R2 U' R' U R' F R F",
+    "inverseAlgorithm": "F' R' F' R U' R U R2' F R y' U R U' R",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Y",
+    "category": "PLL",
+    "name": "Y",
+    "algorithm": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
+    "inverseAlgorithm": "F R' F' R U R U' R' F R U' R' U R U R' F'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Na",
+    "category": "PLL",
+    "name": "Na",
+    "algorithm": "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'",
+    "inverseAlgorithm": "R U R' U2' R U R2' F' R U R U' R' F R U' R' U' R U' R'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Nb",
+    "category": "PLL",
+    "name": "Nb",
+    "algorithm": "R' U R U' R' F' U' F R U R' F R' F' R U' R",
+    "inverseAlgorithm": "R' U R' F R F' R U' R' F' U F R U R' U' R",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Ga",
+    "category": "PLL",
+    "name": "Ga",
+    "algorithm": "R2 U R' U R' U' R U' R2 D U' R' U R D'",
+    "inverseAlgorithm": "D R' U' R U D' R2' U R' U R U' R U' R2'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": [],
+    "metadata": {
+      "auf": "U"
+    }
+  },
+  {
+    "id": "PLL-Gb",
+    "category": "PLL",
+    "name": "Gb",
+    "algorithm": "F' U' F R2 u R' U R U' R u' R2'",
+    "inverseAlgorithm": "R2 u R' U R' U' R u' R2' F' U F",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": []
+  },
+  {
+    "id": "PLL-Gc",
+    "category": "PLL",
+    "name": "Gc",
+    "algorithm": "R2 U' R U' R U R' U R2 D' U R U' R' D",
+    "inverseAlgorithm": "D' R U R' U' D R2' U' R U' R' U R' U R2'",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": [],
+    "metadata": {
+      "auf": "U'"
+    }
+  },
+  {
+    "id": "PLL-Gd",
+    "category": "PLL",
+    "name": "Gd",
+    "algorithm": "D' R U R' U' D R2 U' R U' R' U R' U R2",
+    "inverseAlgorithm": "R2' U' R U' R U R' U R2' D' U R U' R' D",
+    "alternatives": [],
+    "source": "CubeSkills PLL Algorithms PDF (Feliks Zemdegs & Andy Klise), file pll-algorithms.pdf",
+    "tags": [],
+    "metadata": {
+      "auf": "U"
+    }
+  }
+]

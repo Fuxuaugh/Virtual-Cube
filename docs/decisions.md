@@ -46,6 +46,7 @@ Terverifikasi: setelah `y x` hasilnya `true`. Ini memenuhi keputusan PRD §2 (so
 Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah antar versi. Bungkus di adapter, jangan dipanggil langsung dari UI.
 
 ### 5. Bentuk patternData (cubing 0.66.1, terverifikasi dari tipe dan runtime)
+
 - Tiga orbit: EDGES (12 piece, orientasi mod 2), CORNERS (8 piece, mod 3), CENTERS (6 piece, orientasi tidak dilacak).
 - `pieces[slot]` = home slot dari piece yang kini ada di slot itu. `orientation[slot]` = orientasi piece tersebut.
 - Layer atas diturunkan dari efek gerakan U pada solved: slot corner dan edge 0 sampai 3. Gerakan U tidak mengubah orientasi.
@@ -104,6 +105,7 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
 - `kpuzzle()` async, jadi adapter harus punya langkah init yang di-await sekali.
 
 ## M3 — Temuan alat verifikasi
+
 - OLL: 216 kombinasi orientasi legal layer atas, 58 kelas setelah normalisasi putaran U (57 OLL + 1 kelas solved).
   Hitungan Burnside: (216 + 2 + 12 + 2) / 4 = 58.
 - PLL: 288 state permutasi legal layer atas. AUF harus dinormalisasi di KEDUA sisi (sebelum dan sesudah):
@@ -117,3 +119,13 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
 - difficulty: 'easy' | 'medium' | 'hard'. Validator data berupa TypeScript, bukan file JSON Schema.
 - Masalah lingkungan: drive D: kemungkinan bukan NTFS (error "dubious ownership" Git dan ReplaceFileW EIO).
   Pindahkan proyek ke drive NTFS bila masalah file berulang.
+
+## M4 — Pose verifikasi vs pose tampilan
+
+- Verifikasi "algoritma menyelesaikan case" memakai pose MENTAH (`buildCaseStateRaw` = `solved` + `inverseAlgorithm`),
+  karena algoritma dengan rotasi seluruh kubus netto hanya berlaku pada pose yang diasumsikan algoritma itu.
+- Tampilan dan pemeriksaan kondisi awal case memakai pose TERNORMALISASI (`buildCaseState`), supaya frame aplikasi
+  selalu punya keenam center di slot asal.
+- Algoritma dengan rotasi netto (terukur: `PLL-V`, satu `y` tanpa `y'`) perlu penanganan di generator M4: generator
+  harus tahu pose mana yang ditampilkan dan bagaimana AUF ditambahkan tanpa merusak pose algoritma.
+  Daftar terukurnya ada di `docs/data-verification-report.md`; datanya tidak diperbaiki.

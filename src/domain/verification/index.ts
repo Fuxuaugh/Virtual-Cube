@@ -8,9 +8,15 @@
  * Secara default `f2lSolved`, `ollSignature`, dan `pllSignature` memakai state
  * yang sudah dinormalisasi orientasinya; opsi `{ strict: true }` memakai state
  * apa adanya.
+ *
+ * Dua pose state case:
+ * - `buildCaseStateRaw` — pose mentah (`solved` + `inverseAlgorithm`), pose yang
+ *   diasumsikan algoritma; dipakai untuk verifikasi "algoritma menyelesaikan case".
+ * - `buildCaseState` — pose ternormalisasi (center di slot asal); dipakai untuk
+ *   tampilan dan pemeriksaan kondisi awal case.
  */
 
-export { buildCaseState } from './case-state.js'
+export { buildCaseState, buildCaseStateRaw } from './case-state.js'
 export { f2lSolved } from './f2l-solved.js'
 export {
   enumerateOllClasses,
