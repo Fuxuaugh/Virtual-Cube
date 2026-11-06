@@ -96,10 +96,10 @@ Exit: cube dapat ditampilkan, diputar, dan digerakkan tanpa perbedaan state.
 
 ## M6 — Keybind
 
-- [ ] P0 — 6.1 Implementasi mapping dari `docs/keybinds.md` (cube move, timer, inspection).
-- [ ] P0 — 6.2 Layer input terpusat (satu handler, bukan listener tersebar).
-- [ ] P1 — 6.3 Preset csTimer, custom keybind, UI pengaturan.
-- [ ] P1 — 6.4 Test konflik input (Space vs gerakan, fokus input teks).
+- [x] P0 — 6.1 Implementasi mapping dari `docs/keybinds.md` (cube move, timer, inspection).
+- [x] P0 — 6.2 Layer input terpusat (satu handler, bukan listener tersebar).
+- [x] P1 — 6.3 Preset csTimer, custom keybind, UI pengaturan.
+- [x] P1 — 6.4 Test konflik input (Space vs gerakan, fokus input teks).
 
 Exit: kontrol utama sesuai mapping csTimer yang terverifikasi.
 

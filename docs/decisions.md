@@ -160,3 +160,21 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
 - Test komponen memakai happy-dom (devDependency) + `react-dom/client` + `React.act`; player asli
   di-inject lewat prop `createPlayer` supaya test tidak butuh WebGL/GPU.
 - MILESTONES M5 (5.1-5.6) ditandai selesai.
+
+## M6 — Keybind
+
+- Sumber tunggal pemetaan: `docs/keybinds.md`. Pemetaan memakai `event.code` (posisi fisik tombol), bukan
+  `event.key`. Tidak ada tombol yang ditulis dari asumsi.
+- Tombol tanpa fungsi (3, 4, 7, 8) dan yang belum terverifikasi (5 dan 6: sama-sama tertulis `M`) TIDAK
+  dipetakan, jadi tidak memicu pergerakan cube.
+- Rotasi `x`/`y`/`z` tidak memulai timer; gerakan layer memulai timer (`startsTimer` dihitung dari
+  `isLayerMove()` engine, sesuai hasil tes csTimer di `docs/keybinds.md`).
+- `Space` = aksi timer (PRD §3.1), bukan gerakan cube. Timer belum ada (M8), jadi kontraknya port
+  `KeybindTimerPort` di `src/application/keybind/`.
+- `preventDefault()` hanya untuk tombol beraksi bawaan browser (Space, panah) saat listener aktif, dan tidak
+  pernah untuk F1-F12/Tab/Escape atau saat Ctrl/Alt/Meta ditekan (shortcut sistem tetap jalan).
+- Satu listener `keydown` di `window` (`src/infra/keybind/keybind-listener.ts`); seluruh aturan keputusan ada
+  di domain (`src/domain/keybind/`) supaya bisa dites tanpa DOM. Input diabaikan saat fokus di
+  input/textarea/select/contenteditable.
+- Custom keybind + validasi notasi + deteksi konflik tombol sistem tersedia sebagai API
+  (`createKeybindMap`, `findKeybindConflicts`); UI pengaturan keybind (bagian 6.3) belum dibuat.
