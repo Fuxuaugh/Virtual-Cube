@@ -338,3 +338,157 @@ describe('TrainingScreen', () => {
     input.remove()
   })
 })
+
+describe('TrainingScreen - playback algoritma (7B)', () => {
+  async function renderWithFake(): Promise<FakePlayerHandle> {
+    const fake = createFakePlayerHandle()
+    await act(async () => {
+      root.render(
+        <TrainingScreen
+          cases={[...f2l, ...oll, ...pll]}
+          auf=""
+          createPlayer={async () => fake.player}
+        />
+      )
+    })
+    return fake
+  }
+
+  function clickTestId(testId: string): void {
+    container
+      .querySelector<HTMLButtonElement>(`[data-testid="${testId}"]`)
+      ?.click()
+  }
+
+  it('step maju/mundur dan reset tetap sinkron dengan cube', async () => {
+    const fake = await renderWithFake()
+
+    await act(async () => {
+      clickTestId('playback-step-forward')
+    })
+
+    expect(textOf('move-count')).toBe('1')
+    expect(
+      container
+        .querySelector('[data-testid="playback-move-0"]')
+        ?.getAttribute('data-active')
+    ).toBe('true')
+    expect(await fake.player.matchesState(solvedState())).toBe(false)
+
+    await act(async () => {
+      clickTestId('playback-step-forward')
+    })
+    expect(textOf('move-count')).toBe('2')
+
+    await act(async () => {
+      clickTestId('playback-step-backward')
+    })
+    expect(textOf('move-count')).toBe('3')
+    expect(
+      container
+        .querySelector('[data-testid="playback-move-0"]')
+        ?.getAttribute('data-active')
+    ).toBe('true')
+
+    await act(async () => {
+      clickTestId('playback-reset')
+    })
+
+    expect(textOf('move-count')).toBe('0')
+    expect(textOf('status')).toBe('Ready')
+    expect(
+      container
+        .querySelector('[data-testid="playback-move-0"]')
+        ?.getAttribute('data-active')
+    ).toBe('false')
+  })
+
+  it('play/pause mengubah label tombol dan status playback', async () => {
+    await renderWithFake()
+
+    const playButton = (): string =>
+      container.querySelector('[data-testid="playback-play"]')?.textContent ??
+      ''
+
+    expect(playButton()).toBe('Play')
+
+    await act(async () => {
+      clickTestId('playback-play')
+    })
+    expect(playButton()).toBe('Pause')
+
+    await act(async () => {
+      clickTestId('playback-play')
+    })
+    expect(playButton()).toBe('Play')
+  })
+
+  it('tempo playback bisa diubah (1x/2x/5x)', async () => {
+    await renderWithFake()
+
+    const select = container.querySelector<HTMLSelectElement>(
+      '[data-testid="playback-tempo"]'
+    )
+    expect(select).not.toBeNull()
+    if (!select) return
+
+    expect(select.value).toBe('1')
+
+    await act(async () => {
+      select.value = '5'
+      select.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+
+    expect(
+      container.querySelector<HTMLSelectElement>(
+        '[data-testid="playback-tempo"]'
+      )?.value
+    ).toBe('5')
+  })
+
+  it('shortcut Enter = Next Case dan Backspace = Retry', async () => {
+    await renderWithFake()
+
+    await act(async () => {
+      clickTestId('playback-step-forward')
+    })
+    expect(textOf('move-count')).toBe('1')
+
+    act(() => {
+      ;(document.activeElement as HTMLElement | null)?.blur?.()
+    })
+
+    await act(async () => {
+      pressCode('Backspace')
+    })
+    expect(textOf('move-count')).toBe('0')
+    expect(textOf('status')).toBe('Ready')
+
+    await act(async () => {
+      pressCode('Enter')
+    })
+    expect(textOf('move-count')).toBe('0')
+    expect(textOf('status')).toBe('Ready')
+    expect(textOf('case-id').length).toBeGreaterThan(0)
+  })
+
+  it('shortcut diabaikan saat fokus di input teks', async () => {
+    await renderWithFake()
+
+    await act(async () => {
+      clickTestId('playback-step-forward')
+    })
+    expect(textOf('move-count')).toBe('1')
+
+    const input = document.createElement('input')
+    document.body.append(input)
+    input.focus()
+
+    await act(async () => {
+      pressCode('Backspace')
+    })
+
+    expect(textOf('move-count')).toBe('1')
+    input.remove()
+  })
+})

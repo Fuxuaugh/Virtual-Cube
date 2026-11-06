@@ -115,8 +115,8 @@ Exit: kontrol utama sesuai mapping csTimer yang terverifikasi.
 
 **7B Pendukung**
 
-- [ ] P1 — Algorithm Viewer + playback (play/pause/reset, highlight gerakan).
-- [ ] P1 — Retry dan Next Case.
+- [x] P1 — Algorithm Viewer + playback (play/pause/reset, highlight gerakan).
+- [x] P1 — Retry dan Next Case.
 
 **7C Recognition**
 

@@ -15,6 +15,7 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 
 import type { KeybindTimerPort } from '../../application/keybind/keybind-service.js'
+import { AlgorithmPlaybackController } from '../../application/training/algorithm-playback.js'
 import { TrainingController } from '../../application/training/training-controller.js'
 import {
   cstimerKeybindMap,
@@ -25,13 +26,26 @@ import { loadCases } from '../../domain/load-cases.js'
 import type { Auf } from '../../domain/generator/index.js'
 import type { CaseCategory, TrainingCase } from '../../domain/training-case.js'
 import type { VirtualCubePlayer } from '../../engine/index.js'
-import { attachKeybindListener } from '../../infra/keybind/keybind-listener.js'
+import {
+  attachKeybindListener,
+  type KeybindShortcut,
+} from '../../infra/keybind/keybind-listener.js'
+import { AlgorithmPlaybackPanel } from './algorithm-playback-panel.js'
 import {
   VirtualCube,
   type VirtualCubePlayerFactory,
 } from '../components/virtual-cube.js'
 
 const CATEGORIES: readonly CaseCategory[] = ['F2L', 'OLL', 'PLL']
+
+/**
+ * Shortcut navigasi cepat supaya ritme fokus tidak terputus. Kode yang dipakai
+ * (Enter/Backspace) tidak dipakai peta gerakan csTimer di `docs/keybinds.md`.
+ */
+const TRAINING_SHORTCUTS: readonly KeybindShortcut[] = [
+  { code: 'Enter', name: 'next-case' },
+  { code: 'Backspace', name: 'retry-case' },
+]
 
 export interface TrainingScreenProps {
   /** Pool case; default dimuat lewat `loadCases()` (F2L + OLL + PLL). */
@@ -136,28 +150,78 @@ function TrainingSession({
   auf,
   className,
 }: TrainingSessionProps) {
-  const [controller] = useState(() => {
+  const [session] = useState(() => {
     const created = new TrainingController({ cases: pool, timer, keybindMap })
     created.startSession({
       category: 'F2L',
       mode: 'random',
       auf: auf ?? 'random',
     })
-    return created
+
+    const generated = created.currentGenerated()
+    const playback = new AlgorithmPlaybackController({
+      target: created,
+      algorithm: generated?.trainingCase.algorithm ?? '',
+      alignmentAuf: generated?.auf ?? '',
+    })
+
+    return { controller: created, playback }
   })
+  const { controller, playback } = session
 
   const snapshot = useSyncExternalStore(
     controller.subscribe,
     controller.getSnapshot,
     controller.getSnapshot
   )
+  const playbackSnapshot = useSyncExternalStore(
+    playback.subscribe,
+    playback.getSnapshot,
+    playback.getSnapshot
+  )
 
-  // Listener keybind terpusat untuk halaman latihan.
+  // Playback mengikuti case aktif (algoritma + AUF penyelarasan).
+  useEffect(() => {
+    const generated = controller.currentGenerated()
+    if (!generated) {
+      return
+    }
+    playback.configure({
+      algorithm: generated.trainingCase.algorithm,
+      alignmentAuf: generated.auf,
+    })
+  }, [controller, playback, snapshot.runId])
+
+  // Loop animasi playback: requestAnimationFrame (tanpa setInterval).
+  useEffect(() => {
+    if (!playbackSnapshot.isPlaying) {
+      return
+    }
+
+    let handle = requestAnimationFrame(function loop() {
+      playback.tick()
+      handle = requestAnimationFrame(loop)
+    })
+
+    return () => cancelAnimationFrame(handle)
+  }, [playback, playbackSnapshot.isPlaying])
+
+  // Listener keybind terpusat untuk halaman latihan (+ shortcut navigasi).
   useEffect(
     () =>
       attachKeybindListener({
         map: keybindMap ?? cstimerKeybindMap,
         onAction: (_action, _event, input) => controller.handleKey(input),
+        shortcuts: TRAINING_SHORTCUTS,
+        onShortcut: (shortcut) => {
+          if (shortcut.name === 'next-case') {
+            controller.nextCase()
+            return
+          }
+          if (shortcut.name === 'retry-case') {
+            controller.retry()
+          }
+        },
       }),
     [controller, keybindMap]
   )
@@ -289,6 +353,7 @@ function TrainingSession({
           <VirtualCube
             className="h-[420px] w-full max-w-md"
             setupAlg={snapshot.setupAlg ?? ''}
+            tempoScale={playbackSnapshot.tempoScale}
             createPlayer={createPlayer}
             onPlayerChange={handlePlayerChange}
           />
@@ -344,6 +409,23 @@ function TrainingSession({
               <p className="text-sm text-slate-400">Tidak ada case aktif.</p>
             )}
           </section>
+
+          <AlgorithmPlaybackPanel
+            moves={playbackSnapshot.algorithmMoves}
+            activeIndex={playbackSnapshot.activeAlgorithmIndex}
+            alignmentAuf={playbackSnapshot.alignmentAuf}
+            isPlaying={playbackSnapshot.isPlaying}
+            isComplete={playbackSnapshot.isComplete}
+            canStepBackward={!playbackSnapshot.isAtStart}
+            canStepForward={!playbackSnapshot.isComplete}
+            tempoScale={playbackSnapshot.tempoScale}
+            onPlay={() => playback.play()}
+            onPause={() => playback.pause()}
+            onStepForward={() => playback.stepForward()}
+            onStepBackward={() => playback.stepBackward()}
+            onReset={() => playback.reset()}
+            onTempoScaleChange={(scale) => playback.setTempoScale(scale)}
+          />
 
           <section className="rounded-xl bg-slate-800/60 p-4">
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-400">

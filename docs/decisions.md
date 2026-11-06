@@ -197,3 +197,21 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
   Next Case & Retry, panel info case: id/nama/tag/algoritma, panel status) + listener keybind terpusat aktif
   di halaman latihan. `src/App.tsx` kini layar latihan, bukan placeholder.
 - Timer belum ada (M8); port `KeybindTimerPort` sudah diteruskan dari layar ke service.
+
+## M7B — Algorithm Viewer, Playback & Flow Polish
+
+- `AlgorithmPlaybackController` (`src/application/training/algorithm-playback.ts`) mengendalikan play/pause,
+  step maju/mundur, reset, dan tempo. Semua gerakan lewat `PlaybackTarget` (= `TrainingController`), jadi
+  alurnya tetap engine → tampilan (`CubeViewSync`).
+- Controller playback tidak menyentuh DOM/waktu nyata: `tick(now)` dipanggil dari luar. UI memakai
+  `requestAnimationFrame` (sesuai AGENTS, tanpa `setInterval`), test memakai jam palsu.
+- Urutan playback = AUF penyelarasan (bila ada) + algoritma referensi, supaya playback benar-benar
+  menyelesaikan case dari setup-nya. Viewer menandai AUF terpisah dan menyorot gerakan aktif.
+- `TrainingController` menambah `applyMove()` (tanpa aturan "sudah solved", dipakai playback),
+  `resetToSetup()` (kembali ke setup case yang sama), dan `runId` di snapshot (naik tiap `loadCase`, dipakai
+  playback untuk re-sync). `retry()` tetap membuat setup baru (AUF acak baru).
+- Shortcut navigasi cepat lewat listener terpusat yang sama: `Enter` = Next Case, `Backspace` = Retry
+  (keduanya bukan bagian peta gerakan csTimer). Shortcut dilewati bila fokus ada di kontrol interaktif
+  (tombol/tautan/input) supaya tidak menabrak perilaku keyboard bawaan; gerakan cube tidak dibatasi ini.
+- Tempo playback (0.5x/1x/2x/5x) diteruskan juga ke `VirtualCube` (`tempoScale`) agar animasi TwistyPlayer
+  seirama dengan laju langkah playback.

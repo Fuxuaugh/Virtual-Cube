@@ -68,6 +68,10 @@ export interface TrainingSnapshot {
   readonly activeCase: TrainingCase | null
   /** Alg setup yang ditampilkan (pose algoritma). */
   readonly setupAlg: string | null
+  /** AUF setup yang dipakai case aktif (dipakai viewer/playback). */
+  readonly auf: Auf
+  /** Nomor urut pemuatan case (naik tiap loadCase; dipakai playback/timer). */
+  readonly runId: number
   /** Algoritma referensi case (untuk panel info). */
   readonly referenceAlgorithm: string | null
   readonly moveCount: number
@@ -127,6 +131,7 @@ export class TrainingController {
   private lastMove: string | null = null
   private solvedCount = 0
   private nextIndex = 0
+  private runId = 0
   private error: string | null = null
 
   private listeners = new Set<() => void>()
@@ -195,7 +200,7 @@ export class TrainingController {
 
   /**
    * Memproses satu input keybind: engine → tampilan → cek solved.
-   * Mengembalikan snapshot terbaru.
+   * Gerakan manual diabaikan setelah case solved (menunggu Next Case/Retry).
    */
   handleKey(input: KeybindInput): TrainingSnapshot {
     if (!this.state || this.status !== 'ready') {
@@ -207,17 +212,41 @@ export class TrainingController {
       return this.snapshot
     }
 
-    this.state = result.state
-
     if (result.action?.kind === 'cube-move') {
-      this.moveCount += 1
-      this.lastMove = result.action.move
-
-      if (isSolvedWithFinalAuf(result.state, this.allowFinalAuf)) {
-        this.status = 'solved'
-        this.solvedCount += 1
-      }
+      return this.applyCubeMove(result.action.move, this.state, result.state)
     }
+
+    this.emit()
+    return this.snapshot
+  }
+
+  /**
+   * Menerapkan satu gerakan ke cube (engine → tampilan) TANPA aturan "sudah
+   * solved"; dipakai playback algoritma (step maju/mundur, play otomatis).
+   */
+  applyMove(move: string): TrainingSnapshot {
+    if (!this.state) {
+      return this.snapshot
+    }
+    return this.applyCubeMove(move, this.state)
+  }
+
+  /**
+   * Mengembalikan cube ke kondisi awal setup case aktif (case tetap sama).
+   * Berbeda dari `retry()` yang membuat setup baru (AUF acak baru).
+   */
+  resetToSetup(): TrainingSnapshot {
+    if (!this.generated) {
+      return this.snapshot
+    }
+
+    this.state = this.generated.setupState
+    this.status = 'ready'
+    this.moveCount = 0
+    this.lastMove = null
+
+    this.sync?.resetToSolved()
+    this.sync?.showSetup(this.generated.setupAlg)
 
     this.emit()
     return this.snapshot
@@ -242,6 +271,29 @@ export class TrainingController {
     })
   }
 
+  private applyCubeMove(
+    move: string,
+    state: CubeState,
+    applied?: CubeState
+  ): TrainingSnapshot {
+    const next =
+      applied ??
+      (this.sync ? this.sync.applyMove(state, move) : applyAlg(state, move))
+
+    this.state = next
+    this.moveCount += 1
+    this.lastMove = move
+    this.status = isSolvedWithFinalAuf(next, this.allowFinalAuf)
+      ? 'solved'
+      : 'ready'
+    if (this.status === 'solved') {
+      this.solvedCount += 1
+    }
+
+    this.emit()
+    return this.snapshot
+  }
+
   private createKeybindService(): KeybindService {
     return new KeybindService({
       map: this.keybindMap,
@@ -264,6 +316,7 @@ export class TrainingController {
       this.status = 'ready'
       this.moveCount = 0
       this.lastMove = null
+      this.runId += 1
       this.error = null
 
       // Tampilan: bersihkan gerakan lama, lalu tampilkan setup case baru.
@@ -319,6 +372,8 @@ export class TrainingController {
       mode: this.mode,
       activeCase: this.activeCase,
       setupAlg: this.generated?.setupAlg ?? null,
+      auf: this.generated?.auf ?? '',
+      runId: this.runId,
       referenceAlgorithm: this.activeCase?.algorithm ?? null,
       moveCount: this.moveCount,
       lastMove: this.lastMove,

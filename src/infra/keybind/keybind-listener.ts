@@ -27,9 +27,21 @@ export interface KeybindEventTarget {
   removeEventListener(type: 'keydown', listener: (event: Event) => void): void
 }
 
+/** Shortcut UI (bukan gerakan cube), mis. Enter = Next Case. */
+export interface KeybindShortcut {
+  /** `event.code` posisi fisik tombol. */
+  readonly code: string
+  /** Nama aksi untuk pemanggil (mis. `next-case`). */
+  readonly name: string
+}
+
 export interface KeybindListenerOptions {
   /** Dipanggil untuk tiap aksi yang dikenali (beserta input hasil terjemahan). */
   onAction: (action: KeybindAction, event: Event, input: KeybindInput) => void
+  /** Shortcut tambahan (mis. Enter/Backspace untuk Next/Retry). */
+  shortcuts?: readonly KeybindShortcut[]
+  /** Dipanggil saat shortcut cocok (dan fokus bukan di kontrol interaktif). */
+  onShortcut?: (shortcut: KeybindShortcut, event: Event) => void
   /** Peta keybind; default preset csTimer. */
   map?: KeybindMap
   /** True bila listener boleh menangani input (mis. fokus di area latihan). */
@@ -42,6 +54,26 @@ export interface KeybindListenerOptions {
 
 /** Melepas listener. */
 export type KeybindDetach = () => void
+
+/**
+ * True bila elemen adalah kontrol interaktif (tombol/tautan/pilihan). Dipakai
+ * untuk shortcut UI saja, supaya Enter/Backspace tidak menabrak perilaku
+ * keyboard bawaan kontrol yang sedang fokus. Gerakan cube tidak dibatasi ini.
+ */
+export function isInteractiveElement(
+  element: Element | null | undefined
+): boolean {
+  if (!element) {
+    return false
+  }
+  const tagName = element.tagName?.toLowerCase()
+  return (
+    tagName === 'button' ||
+    tagName === 'a' ||
+    tagName === 'summary' ||
+    isTextInputElement(element)
+  )
+}
 
 /** True bila elemen adalah input teks (input/textarea/contenteditable). */
 export function isTextInputElement(
@@ -101,6 +133,9 @@ export function attachKeybindListener(
   const getActiveElement =
     options.getActiveElement ??
     (() => (typeof document === 'undefined' ? null : document.activeElement))
+  const shortcuts = new Map(
+    (options.shortcuts ?? []).map((shortcut) => [shortcut.code, shortcut])
+  )
 
   const handler = (event: Event): void => {
     if (!isActive()) {
@@ -120,6 +155,18 @@ export function attachKeybindListener(
 
     if (shouldIgnoreKeybindInput(input)) {
       return
+    }
+
+    if (shortcuts.size > 0) {
+      const shortcut = shortcuts.get(input.code)
+      if (shortcut) {
+        const activeElement = getActiveElement()
+        if (!isInteractiveElement(activeElement)) {
+          event.preventDefault()
+          options.onShortcut?.(shortcut, event)
+        }
+        return
+      }
     }
 
     const action = map.resolve(input.code)
