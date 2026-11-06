@@ -1,4 +1,4 @@
-# CUBE TRAINER — Milestones v2.0
+x # CUBE TRAINER — Milestones v2.0
 
 Berdasarkan: PRD v2.0 · Prioritas: P0 wajib MVP · P1 penting · P2 lanjutan · P3 opsional
 
@@ -16,8 +16,8 @@ M0 Spike → M1 Foundation → M2 Cube Engine → M3 Case Database → M4 Case G
 ## M0 — Prototype Spike (BARU, wajib pertama)
 Tujuan: membuktikan asumsi teknis terbesar sebelum membangun apa pun. Kode spike boleh dibuang.
 
-- [ ] P0 — 0.1 React + TS + Vite menjalankan halaman kosong di browser (`npm run dev`).
-- [ ] P0 — 0.2 Render `TwistyPlayer` di halaman web dengan kamera tetap yang hanya menampilkan sisi U dan F (cari properti sudut kamera yang tepat, nonaktifkan kontrol mouse). Catat nilai sudut di `docs/decisions.md`.
+- [x] P0 — 0.1 React + TS + Vite menjalankan halaman kosong di browser (`npm run dev`).
+- [x] 0 — 0.2 Render `TwistyPlayer` di halaman web dengan kamera tetap yang hanya menampilkan sisi U dan F (cari properti sudut kamera yang tepat, nonaktifkan kontrol mouse). Catat nilai sudut di `docs/decisions.md`.
 - [ ] P0 — 0.3 Terapkan algoritma lewat cubing.js (KPuzzle/KPattern) dan baca state hasilnya.
 - [ ] P0 — 0.4 Tangkap input keyboard → jalankan gerakan di engine → dorong ke player, state keduanya identik.
 - [ ] P0 — 0.5 Ekstrak mapping keybind virtual cube + timer dari source csTimer, tulis ke `docs/keybinds.md` (sertakan link file/baris sumber).
