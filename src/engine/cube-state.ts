@@ -31,4 +31,3 @@ export function unwrapCubeState(state: CubeState): KPattern {
   }
   return pattern
 }
-

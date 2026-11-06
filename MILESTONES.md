@@ -47,11 +47,11 @@ Exit: `npm run dev` membuka aplikasi kosong di browser; `npm test` dan `npm run 
 
 - [x] P0 — 2.1 Adapter cubing.js (satu-satunya pintu masuk ke library).
 - [x] P0 — 2.2 Definisi CubeState, solved state, perbandingan state.
-- [ ] P0 — 2.3 Parser dan eksekusi notasi lengkap (face, wide, slice, rotasi, `'`, `2`).
+- [x] P0 — 2.3 Parser dan eksekusi notasi lengkap (face, wide, slice, rotasi, `'`, `2`).
 - [x] P0 — 2.4 Inverse algorithm.
 - [x] P0 — 2.5 Solved detection tidak bergantung rotasi cube.
-- [ ] P0 — 2.6 State Validator (permutasi, orientasi, parity).
-- [ ] P0 — 2.7 Unit test: setiap gerakan dasar (X, X', X2) dan `alg + inverse(alg) = solved` untuk set algoritma acak.
+- [x] P0 — 2.6 State Validator (permutasi, orientasi, parity).
+- [x] P0 — 2.7 Unit test: setiap gerakan dasar (X, X', X2) dan `alg + inverse(alg) = solved` untuk set algoritma acak.
 
 Exit: semua test hijau; algoritma + inverse selalu kembali ke solved.
 

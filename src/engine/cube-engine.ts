@@ -1,5 +1,5 @@
 import { Alg, Move } from 'cubing/alg'
-import type { KPattern } from 'cubing/kpuzzle'
+import { KPattern, type KPatternData } from 'cubing/kpuzzle'
 import { cube3x3x3 } from 'cubing/puzzles'
 import { CubeState, unwrapCubeState, wrapCubeState } from './cube-state.js'
 
@@ -8,15 +8,34 @@ let cachedSolvedPattern: KPattern | null = null
 
 const ALLOWED_FAMILIES = new Set([
   // Face moves (6)
-  'U', 'D', 'L', 'R', 'F', 'B',
+  'U',
+  'D',
+  'L',
+  'R',
+  'F',
+  'B',
   // Wide moves (single letter, 6)
-  'u', 'd', 'l', 'r', 'f', 'b',
+  'u',
+  'd',
+  'l',
+  'r',
+  'f',
+  'b',
   // Wide moves (WCA notation, 6)
-  'Uw', 'Dw', 'Lw', 'Rw', 'Fw', 'Bw',
+  'Uw',
+  'Dw',
+  'Lw',
+  'Rw',
+  'Fw',
+  'Bw',
   // Slice moves (3)
-  'M', 'E', 'S',
+  'M',
+  'E',
+  'S',
   // Rotations (3)
-  'x', 'y', 'z',
+  'x',
+  'y',
+  'z',
 ])
 
 /**
@@ -42,27 +61,38 @@ export function validateAndParseAlg(alg: string): Alg {
   } catch (err) {
     throw new Error(
       `Invalid algorithm "${alg}": ${err instanceof Error ? err.message : String(err)}`,
-      { cause: err },
+      { cause: err }
     )
   }
 
   const expanded = parsed.expand()
   for (const node of expanded.childAlgNodes()) {
     if (!(node instanceof Move)) {
-      throw new Error(`Invalid move in algorithm "${alg}": unsupported node "${node.toString()}"`)
+      throw new Error(
+        `Invalid move in algorithm "${alg}": unsupported node "${node.toString()}"`
+      )
     }
 
     if (!ALLOWED_FAMILIES.has(node.family)) {
-      throw new Error(`Invalid move family "${node.family}" in algorithm "${alg}"`)
+      throw new Error(
+        `Invalid move family "${node.family}" in algorithm "${alg}"`
+      )
     }
 
     const absAmount = Math.abs(node.amount)
     if (absAmount !== 1 && absAmount !== 2) {
-      throw new Error(`Invalid move modifier/amount for "${node.toString()}" in algorithm "${alg}"`)
+      throw new Error(
+        `Invalid move modifier/amount for "${node.toString()}" in algorithm "${alg}"`
+      )
     }
 
-    if ((node.innerLayer && node.innerLayer > 2) || (node.outerLayer && node.outerLayer > 2)) {
-      throw new Error(`Invalid layer depth for 3x3 cube in move "${node.toString()}" in algorithm "${alg}"`)
+    if (
+      (node.innerLayer && node.innerLayer > 2) ||
+      (node.outerLayer && node.outerLayer > 2)
+    ) {
+      throw new Error(
+        `Invalid layer depth for 3x3 cube in move "${node.toString()}" in algorithm "${alg}"`
+      )
     }
   }
 
@@ -101,7 +131,9 @@ export const init = initCubeEngine
  */
 export function solvedState(): CubeState {
   if (!cachedSolvedPattern) {
-    throw new Error('CubeEngine not initialized. Await initCubeEngine() before calling solvedState().')
+    throw new Error(
+      'CubeEngine not initialized. Await initCubeEngine() before calling solvedState().'
+    )
   }
   return wrapCubeState(cachedSolvedPattern)
 }
@@ -121,7 +153,7 @@ export function applyAlg(state: CubeState, alg: string): CubeState {
   } catch (err) {
     throw new Error(
       `Invalid algorithm "${alg}": ${err instanceof Error ? err.message : String(err)}`,
-      { cause: err },
+      { cause: err }
     )
   }
 }
@@ -163,7 +195,9 @@ export function isSolved(state: CubeState, options?: IsSolvedOptions): boolean {
 
   if (options?.strict) {
     if (!cachedSolvedPattern) {
-      throw new Error('CubeEngine not initialized. Await initCubeEngine() before calling isSolved() with strict option.')
+      throw new Error(
+        'CubeEngine not initialized. Await initCubeEngine() before calling isSolved() with strict option.'
+      )
     }
     return pattern.isIdentical(cachedSolvedPattern)
   }
@@ -172,4 +206,24 @@ export function isSolved(state: CubeState, options?: IsSolvedOptions): boolean {
     ignorePuzzleOrientation: true,
     ignoreCenterOrientation: true,
   })
+}
+
+/**
+ * Helper internal untuk pengujian: mengkloning patternData dari CubeState.
+ */
+export function clonePatternData(state: CubeState): KPatternData {
+  const pattern = unwrapCubeState(state)
+  return JSON.parse(JSON.stringify(pattern.patternData)) as KPatternData
+}
+
+/**
+ * Helper internal untuk pengujian: membuat CubeState dengan patternData kustom.
+ */
+export function createCustomCubeState(patternData: KPatternData): CubeState {
+  if (!cachedSolvedPattern) {
+    throw new Error(
+      'CubeEngine not initialized. Await initCubeEngine() before calling createCustomCubeState().'
+    )
+  }
+  return wrapCubeState(new KPattern(cachedSolvedPattern.kpuzzle, patternData))
 }

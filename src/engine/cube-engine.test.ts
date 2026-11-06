@@ -134,7 +134,7 @@ describe('CubeEngine Adapter', () => {
     function createRng(seed: number) {
       let s = seed >>> 0
       return function next(): number {
-        s = (Math.imul(s ^ (s >>> 15), 1 | s)) >>> 0
+        s = Math.imul(s ^ (s >>> 15), 1 | s) >>> 0
         s = (s + Math.imul(s ^ (s >>> 7), 61 | s)) ^ s
         return ((s ^ (s >>> 14)) >>> 0) / 4294967296
       }
@@ -142,10 +142,24 @@ describe('CubeEngine Adapter', () => {
 
     function generateRandomAlg(rng: () => number, length: number): string {
       const families = [
-        'U', 'D', 'L', 'R', 'F', 'B',
-        'u', 'd', 'l', 'r', 'f', 'b',
-        'M', 'E', 'S',
-        'x', 'y', 'z',
+        'U',
+        'D',
+        'L',
+        'R',
+        'F',
+        'B',
+        'u',
+        'd',
+        'l',
+        'r',
+        'f',
+        'b',
+        'M',
+        'E',
+        'S',
+        'x',
+        'y',
+        'z',
       ]
       const modifiers = ['', "'", '2']
       const moves: string[] = []
@@ -173,12 +187,23 @@ describe('CubeEngine Adapter', () => {
 
   describe('Rotasi seluruh cube (x, y, z dan kombinasi)', () => {
     const ROTATIONS = [
-      'x', 'y', 'z',
-      "x'", "y'", "z'",
-      'x2', 'y2', 'z2',
-      'x y', 'y z', 'z x',
-      'y x', 'z y', 'x z',
-      'x y z', "x' y2 z",
+      'x',
+      'y',
+      'z',
+      "x'",
+      "y'",
+      "z'",
+      'x2',
+      'y2',
+      'z2',
+      'x y',
+      'y z',
+      'z x',
+      'y x',
+      'z y',
+      'x z',
+      'x y z',
+      "x' y2 z",
     ]
 
     for (const rot of ROTATIONS) {
@@ -195,12 +220,24 @@ describe('CubeEngine Adapter', () => {
 
   describe('Single layer move', () => {
     const LAYER_MOVES = [
-      'U', "U'", 'U2',
-      'D', "D'", 'D2',
-      'L', "L'", 'L2',
-      'R', "R'", 'R2',
-      'F', "F'", 'F2',
-      'B', "B'", 'B2',
+      'U',
+      "U'",
+      'U2',
+      'D',
+      "D'",
+      'D2',
+      'L',
+      "L'",
+      'L2',
+      'R',
+      "R'",
+      'R2',
+      'F',
+      "F'",
+      'F2',
+      'B',
+      "B'",
+      'B2',
     ]
 
     for (const m of LAYER_MOVES) {
@@ -214,15 +251,7 @@ describe('CubeEngine Adapter', () => {
   })
 
   describe('Algoritma tidak valid melempar error', () => {
-    const INVALID_ALGS = [
-      'Q',
-      'R U BadMove',
-      'R++',
-      'U3',
-      'X2',
-      '???',
-      'R 5',
-    ]
+    const INVALID_ALGS = ['Q', 'R U BadMove', 'R++', 'U3', 'X2', '???', 'R 5']
 
     for (const bad of INVALID_ALGS) {
       it(`validateAlg melempar error pada "${bad}"`, () => {
