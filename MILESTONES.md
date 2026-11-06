@@ -19,18 +19,18 @@ Tujuan: membuktikan asumsi teknis terbesar sebelum membangun apa pun. Kode spike
 - [x] P0 — 0.1 React + TS + Vite menjalankan halaman kosong di browser (`npm run dev`).
 - [x] 0 — 0.2 Render `TwistyPlayer` di halaman web dengan kamera tetap yang hanya menampilkan sisi U dan F (cari properti sudut kamera yang tepat, nonaktifkan kontrol mouse). Catat nilai sudut di `docs/decisions.md`.
 - [x] P0 — 0.3 Terapkan algoritma lewat cubing.js (KPuzzle/KPattern) dan baca state hasilnya.
-- [ ] P0 — 0.4 Tangkap input keyboard → jalankan gerakan di engine → dorong ke player, state keduanya identik.
-- [ ] P0 — 0.5 Ekstrak mapping keybind virtual cube + timer dari source csTimer, tulis ke `docs/keybinds.md` (sertakan link file/baris sumber).
-- [ ] P0 — 0.6 Catat apakah rotasi x/y/z memulai timer di csTimer.
-- [ ] P0 — 0.7 Buktikan IndexedDB (Dexie): tulis dan baca satu data setelah refresh halaman dan setelah browser ditutup.
-- [ ] P0 — 0.8 Tulis `docs/decisions.md`: hasil spike, jawaban untuk PRD §18.
+- [x] P0 — 0.4 Tangkap input keyboard → jalankan gerakan di engine → dorong ke player, state keduanya identik.
+- [x] P0 — 0.5 Ekstrak mapping keybind virtual cube + timer dari source csTimer, tulis ke `docs/keybinds.md` (sertakan link file/baris sumber).
+- [x] P0 — 0.6 Catat apakah rotasi x/y/z memulai timer di csTimer.
+- [x] P0 — 0.7 Buktikan IndexedDB (Dexie): tulis dan baca satu data setelah refresh halaman dan setelah browser ditutup.
+- [x] P0 — 0.8 Tulis `docs/decisions.md`: hasil spike, jawaban untuk PRD §18.
 
 Exit: semua poin terjawab dan terdokumentasi; PRD diperbarui bila perlu.
 
 ---
 
 ## M1 — Project Foundation
-- [ ] P0 — 1.1 Git repo, struktur folder sesuai PRD §12, `CLAUDE.md`.
+- [ ] P0 — 1.1 Git repo, struktur folder sesuai PRD §12, `AGENTS.md`
 - [ ] P0 — 1.2 React + TS strict + Vite + Tailwind + `vite-plugin-pwa`.
 - [ ] P1 — 1.3 Vitest, ESLint, Prettier, skrip `npm test`, `npm run lint`.
 - [ ] P1 — 1.4 CI sederhana (lint + test) bila memakai GitHub.
