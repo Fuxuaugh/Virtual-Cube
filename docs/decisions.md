@@ -131,3 +131,17 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
   Daftar terukurnya ada di `docs/data-verification-report.md`; datanya tidak diperbaiki.
 - Skrip konversi digeneralisasi per kategori: `npm run build:data` = PLL lalu OLL (`build:data:pll`/`build:data:oll` untuk satu kategori).
   Verifikasi PLL + OLL: 78/78 case lulus; case berotasi netto pada pose mentah = 1 PLL + 8 OLL (lihat `docs/data-verification-report.md`).
+
+## M4 — Case Generator
+
+- `setupState` = `solved` + `inverseAlgorithm` (pose algoritma) + AUF acak. AUF ditambahkan pada layer U
+  **pose mentah** supaya kondisi awal case tidak rusak (AUF hanya memutar layer atas: orientasi OLL dan
+  permutasi PLL tetap sesuai case modulo AUF).
+- `alignmentAuf` = kebalikan AUF; solver memakainya sebelum menjalankan algoritma, dan setelah itu cube
+  kembali solved **persis** (PRD §7.1 "memperhitungkan AUF"). Verifikasi test mencari AUF ini sendiri dari
+  4 kemungkinan, tidak mempercayai nilai dari generator.
+- `displayState` = setup state ternormalisasi (center di slot asal) hanya untuk tampilan. Algoritma case
+  TIDAK boleh dijalankan dari `displayState` karena pose-nya berbeda (lihat M4 — Pose di atas).
+- Verifikasi generator: 119/119 case lulus (setup + algoritma = solved, State Validator, kondisi awal per
+  kategori); state generator OLL 57 unik dan PLL 21 unik (memperhitungkan AUF). F2L tidak diuji keunikan
+  karena data PDF memuat varian slot/AUF (lihat `docs/f2l-classification.md`).

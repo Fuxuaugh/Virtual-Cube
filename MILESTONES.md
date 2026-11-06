@@ -59,11 +59,11 @@ Exit: semua test hijau; algoritma + inverse selalu kembali ke solved.
 
 ## M3 — Case Database
 
-- [ ] P0 — 3.1 Schema `TrainingCase` + JSON schema validasi data.
-- [ ] P0 — 3.2 Tulis `docs/f2l-classification.md`: definisi 41 case dan sumbernya.
-- [ ] P0 — 3.3 Data 21 PLL, 57 OLL, 41 F2L dengan `source` untuk tiap algoritma (dari sumber tepercaya, bukan dari ingatan AI).
-- [ ] P0 — 3.4 Loader + validasi schema saat startup/test.
-- [ ] P1 — 3.5 Algoritma alternatif, metadata, tingkat kesulitan.
+- [x] P0 — 3.1 Schema `TrainingCase` + JSON schema validasi data.
+- [x] P0 — 3.2 Tulis `docs/f2l-classification.md`: definisi 41 case dan sumbernya.
+- [x] P0 — 3.3 Data 21 PLL, 57 OLL, 41 F2L dengan `source` untuk tiap algoritma (dari sumber tepercaya, bukan dari ingatan AI).
+- [x] P0 — 3.4 Loader + validasi schema saat startup/test.
+- [x] P1 — 3.5 Algoritma alternatif, metadata, tingkat kesulitan.
 
 Exit: semua data lolos schema; jumlah tepat 21/57/41; tidak ada id duplikat.
 
