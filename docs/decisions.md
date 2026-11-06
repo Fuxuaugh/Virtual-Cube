@@ -129,3 +129,5 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
 - Algoritma dengan rotasi netto (terukur: `PLL-V`, satu `y` tanpa `y'`) perlu penanganan di generator M4: generator
   harus tahu pose mana yang ditampilkan dan bagaimana AUF ditambahkan tanpa merusak pose algoritma.
   Daftar terukurnya ada di `docs/data-verification-report.md`; datanya tidak diperbaiki.
+- Skrip konversi digeneralisasi per kategori: `npm run build:data` = PLL lalu OLL (`build:data:pll`/`build:data:oll` untuk satu kategori).
+  Verifikasi PLL + OLL: 78/78 case lulus; case berotasi netto pada pose mentah = 1 PLL + 8 OLL (lihat `docs/data-verification-report.md`).

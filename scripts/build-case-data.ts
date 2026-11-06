@@ -1,8 +1,13 @@
 /**
- * Skrip konversi data PLL: `data_source/pll.csv` → `src/data/pll.json`.
+ * Skrip konversi data case: `data_source/<kategori>.csv` → `src/data/<kategori>.json`.
  *
- * Jalankan dengan `npm run build:data`. Skrip idempotent: input yang sama selalu
- * menghasilkan file yang sama, tanpa efek samping lain.
+ * Jalankan dengan kategori sebagai argumen:
+ * - `npm run build:data`      → PLL lalu OLL
+ * - `npm run build:data:pll`  → `data_source/pll.csv` → `src/data/pll.json`
+ * - `npm run build:data:oll`  → `data_source/oll.csv` → `src/data/oll.json`
+ *
+ * Skrip idempotent: input yang sama selalu menghasilkan file yang sama, tanpa
+ * efek samping lain (PLL yang sudah ada tetap byte-identik).
  *
  * File ini sengaja berada di `scripts/` (di luar `include` tsconfig.app.json)
  * karena memakai API Node (`node:fs`) yang tipenya tidak dimuat di project app;
@@ -16,9 +21,9 @@
  *   `validateCaseData`, skrip melaporkan id + algoritma aslinya dan TIDAK
  *   menulis file (supaya JSON tidak pernah berisi data setengah jadi).
  *
- * Catatan: `loadCases('PLL')` memakai `import.meta.glob` (khusus Vite) sehingga
- * tidak bisa dipanggil dari skrip Node ini; pemuatan lewat loader diuji di
- * `src/data/pll-data.test.ts` yang berjalan di Vitest.
+ * Catatan: `loadCases()` memakai `import.meta.glob` (khusus Vite) sehingga tidak
+ * bisa dipanggil dari skrip Node ini; pemuatan lewat loader diuji di
+ * `src/data/pll-data.test.ts` dan `src/data/oll-data.test.ts` (Vitest).
  */
 
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -27,16 +32,20 @@ import prettier from 'prettier'
 
 import { isEmptyCsvRow, parseCsv } from '../src/data-build/csv.js'
 import { normalizeAlgorithm } from '../src/data-build/normalize-algorithm.js'
-import type { TrainingCase } from '../src/domain/training-case.js'
+import type { CaseCategory, TrainingCase } from '../src/domain/training-case.js'
 import { validateCaseData } from '../src/domain/validate-case-data.js'
 import { invertAlg } from '../src/engine/index.js'
 
-const CSV_PATH = fileURLToPath(
-  new URL('../data_source/pll.csv', import.meta.url)
-)
-const OUTPUT_PATH = fileURLToPath(
-  new URL('../src/data/pll.json', import.meta.url)
-)
+interface CategoryConfig {
+  csvFile: string
+  outputFile: string
+}
+
+/** Kategori yang didukung skrip ini (satu CSV per kategori). */
+const CATEGORY_CONFIG: Readonly<Record<string, CategoryConfig>> = {
+  PLL: { csvFile: 'pll.csv', outputFile: 'pll.json' },
+  OLL: { csvFile: 'oll.csv', outputFile: 'oll.json' },
+}
 
 const REQUIRED_COLUMNS = ['id', 'name', 'algorithm', 'source_url'] as const
 
@@ -46,14 +55,22 @@ interface BuildFailure {
   rawAlgorithm: string
 }
 
-async function main(): Promise<void> {
-  const rows = parseCsv(readFileSync(CSV_PATH, 'utf8')).filter(
+async function buildCategory(category: CaseCategory): Promise<void> {
+  const config = CATEGORY_CONFIG[category]
+  const csvPath = fileURLToPath(
+    new URL(`../data_source/${config.csvFile}`, import.meta.url)
+  )
+  const outputPath = fileURLToPath(
+    new URL(`../src/data/${config.outputFile}`, import.meta.url)
+  )
+
+  const rows = parseCsv(readFileSync(csvPath, 'utf8')).filter(
     (row) => !isEmptyCsvRow(row)
   )
 
   const [header, ...dataRows] = rows
   if (!header) {
-    throw new Error(`CSV kosong: ${CSV_PATH}`)
+    throw new Error(`CSV kosong: ${csvPath}`)
   }
 
   const columnIndex = new Map<string, number>()
@@ -61,7 +78,7 @@ async function main(): Promise<void> {
     const index = header.indexOf(name)
     if (index < 0) {
       throw new Error(
-        `Kolom "${name}" tidak ada di ${CSV_PATH} (header: ${header.join(', ')})`
+        `Kolom "${name}" tidak ada di ${csvPath} (header: ${header.join(', ')})`
       )
     }
     columnIndex.set(name, index)
@@ -81,7 +98,7 @@ async function main(): Promise<void> {
       const { algorithm, auf } = normalizeAlgorithm(rawAlgorithm, id)
       const trainingCase: TrainingCase = {
         id,
-        category: 'PLL',
+        category,
         name: field('name'),
         algorithm,
         inverseAlgorithm: invertAlg(algorithm),
@@ -102,7 +119,7 @@ async function main(): Promise<void> {
 
   if (failures.length > 0) {
     console.error(
-      `GAGAL: ${failures.length} dari ${dataRows.length} baris tidak bisa dikonversi. File tidak ditulis.`
+      `GAGAL (${category}): ${failures.length} dari ${dataRows.length} baris tidak bisa dikonversi. File tidak ditulis.`
     )
     for (const failure of failures) {
       console.error(`- ${failure.id}: ${failure.detail}`)
@@ -115,7 +132,7 @@ async function main(): Promise<void> {
   const validation = validateCaseData(cases)
   if (!validation.valid) {
     console.error(
-      `GAGAL: validateCaseData menolak ${validation.errors.length} masalah. File tidak ditulis.`
+      `GAGAL (${category}): validateCaseData menolak ${validation.errors.length} masalah. File tidak ditulis.`
     )
     for (const error of validation.errors) {
       console.error(`- ${error}`)
@@ -126,15 +143,16 @@ async function main(): Promise<void> {
 
   const json = `${JSON.stringify(cases, null, 2)}\n`
   writeFileSync(
-    OUTPUT_PATH,
-    await prettier.format(json, { filepath: OUTPUT_PATH })
+    outputPath,
+    await prettier.format(json, { filepath: outputPath })
   )
 
   const withAuf = cases.filter((item) => item.metadata?.['auf'] !== undefined)
-  console.log(`Sumber    : ${CSV_PATH}`)
-  console.log(`Output    : ${OUTPUT_PATH}`)
+  console.log(`Kategori  : ${category}`)
+  console.log(`Sumber    : ${csvPath}`)
+  console.log(`Output    : ${outputPath}`)
   console.log(`Baris CSV : ${dataRows.length}`)
-  console.log(`Case PLL  : ${cases.length}`)
+  console.log(`Case      : ${cases.length}`)
   console.log('validateCaseData: valid')
   console.log(
     `metadata.auf: ${withAuf.length} case (${
@@ -143,6 +161,24 @@ async function main(): Promise<void> {
         .join(', ') || '-'
     })`
   )
+}
+
+async function main(): Promise<void> {
+  const requested = process.argv[2]
+  if (requested === undefined) {
+    throw new Error(
+      `Kategori tidak diberikan. Pakai: tsx scripts/build-case-data.ts <${Object.keys(CATEGORY_CONFIG).join('|')}>`
+    )
+  }
+
+  const config = CATEGORY_CONFIG[requested]
+  if (!config) {
+    throw new Error(
+      `Kategori "${requested}" tidak dikenal. Pilihan: ${Object.keys(CATEGORY_CONFIG).join(', ')}`
+    )
+  }
+
+  await buildCategory(requested as CaseCategory)
 }
 
 await main()
