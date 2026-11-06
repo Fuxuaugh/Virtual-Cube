@@ -12,6 +12,7 @@ export {
   generateF2lCase,
   generateOllCase,
   generatePllCase,
+  setupAlgFor,
   solveGeneratedCase,
   type Auf,
   type GeneratedCase,

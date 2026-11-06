@@ -41,6 +41,13 @@ export {
   type ParsedMove,
 } from './parser.js'
 export {
+  createVirtualCubePlayer,
+  VIRTUAL_CUBE_PLAYER_OPTIONS,
+  wrapTwistyPlayer,
+  type VirtualCubePlayer,
+  type VirtualCubePlayerOptions,
+} from './virtual-cube-player.js'
+export {
   calculateParity,
   validateState,
   type ValidationResult,

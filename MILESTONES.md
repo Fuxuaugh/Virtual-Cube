@@ -83,12 +83,12 @@ Exit: semua 119 case lulus verifikasi otomatis. Case yang gagal diperbaiki datan
 
 ## M5 — Virtual Cube
 
-- [ ] P0 — 5.1 Komponen `VirtualCube` (TwistyPlayer) yang menerima state dari engine.
-- [ ] P0 — 5.2 Tampilkan solved dan case hasil generator.
-- [ ] P0 — 5.3 Kamera tetap U+F (rotasi mouse opsional lewat Settings); input gerakan → engine → tampilan (satu arah).
-- [ ] P0 — 5.4 Animasi sinkron; input beruntun cepat tidak membuat state berbeda.
-- [ ] P1 — 5.5 Reset cube, kecepatan animasi.
-- [ ] P1 — 5.6 Test konsistensi: urutan 1000 gerakan acak, state engine = state tampilan.
+- [x] P0 — 5.1 Komponen `VirtualCube` (TwistyPlayer) yang menerima state dari engine.
+- [x] P0 — 5.2 Tampilkan solved dan case hasil generator.
+- [x] P0 — 5.3 Kamera tetap U+F (rotasi mouse opsional lewat Settings); input gerakan → engine → tampilan (satu arah).
+- [x] P0 — 5.4 Animasi sinkron; input beruntun cepat tidak membuat state berbeda.
+- [x] P1 — 5.5 Reset cube, kecepatan animasi.
+- [x] P1 — 5.6 Test konsistensi: urutan 1000 gerakan acak, state engine = state tampilan.
 
 Exit: cube dapat ditampilkan, diputar, dan digerakkan tanpa perbedaan state.
 

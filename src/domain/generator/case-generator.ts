@@ -58,6 +58,8 @@ export interface GeneratedCase {
   auf: Auf
   /** AUF penyelarasan (kebalikan `auf`) sebelum algoritma dijalankan. */
   alignmentAuf: Auf
+  /** Alg setup yang ditampilkan player: `inverseAlgorithm` + AUF. */
+  setupAlg: string
   /** Scramble state: `solved` + `inverseAlgorithm` + AUF, pada pose algoritma. */
   setupState: CubeState
   /** Setup state setelah normalisasi orientasi (center di slot asal) untuk tampilan. */
@@ -82,6 +84,7 @@ export function generateCase(
     trainingCase,
     auf,
     alignmentAuf: AUF_INVERSE[auf],
+    setupAlg: setupAlgFor(trainingCase, auf),
     setupState,
     displayState: normalizeOrientation(setupState),
   }
@@ -143,6 +146,20 @@ export function findAlignmentAuf(generated: GeneratedCase): Auf | undefined {
     const algorithm = `${candidate} ${generated.trainingCase.algorithm}`.trim()
     return equals(applyAlg(generated.setupState, algorithm), solvedState())
   })
+}
+
+/**
+ * Alg setup yang ditampilkan player untuk sebuah case: `inverseAlgorithm` +
+ * AUF (AUF ditambahkan di akhir supaya sesuai dengan `setupState`).
+ */
+export function setupAlgFor(
+  trainingCase: TrainingCase | null | undefined,
+  auf: Auf = ''
+): string {
+  if (!trainingCase) {
+    return ''
+  }
+  return `${trainingCase.inverseAlgorithm} ${auf}`.trim()
 }
 
 function generateForCategory(

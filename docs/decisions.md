@@ -145,3 +145,18 @@ Peringatan: nama `experimentalIsSolved` berawalan "experimental", bisa berubah a
 - Verifikasi generator: 119/119 case lulus (setup + algoritma = solved, State Validator, kondisi awal per
   kategori); state generator OLL 57 unik dan PLL 21 unik (memperhitungkan AUF). F2L tidak diuji keunikan
   karena data PDF memuat varian slot/AUF (lihat `docs/f2l-classification.md`).
+
+## M5 — Virtual Cube
+
+- Kamera dan kontrol dikunci di adapter engine (`VIRTUAL_CUBE_PLAYER_OPTIONS`): `cameraLatitude: 35`,
+  `cameraLongitude: 0` (hanya sisi U dan F), `controlPanel: 'none'`, `hintFacelets: 'none'`,
+  `experimentalDragInput: 'none'`, plus `style.pointerEvents = 'none'` (temuan spike M0). UI tidak
+  mengatur opsi ini sendiri.
+- Alur satu arah dipegang `CubeViewSync` (`src/application/`): gerakan diterapkan ke engine dulu
+  (`applyAlg`), baru didorong ke TwistyPlayer (`experimentalAddMove`). Bila notasi ditolak engine,
+  tampilan tidak didorong sama sekali (tidak ada desync dari input tidak sah).
+- Membaca pattern player bersifat async (`experimentalModel.currentPattern.get()` mengembalikan
+  Promise), jadi `matchesState`/`readPatternKey` di adapter juga async.
+- Test komponen memakai happy-dom (devDependency) + `react-dom/client` + `React.act`; player asli
+  di-inject lewat prop `createPlayer` supaya test tidak butuh WebGL/GPU.
+- MILESTONES M5 (5.1-5.6) ditandai selesai.
